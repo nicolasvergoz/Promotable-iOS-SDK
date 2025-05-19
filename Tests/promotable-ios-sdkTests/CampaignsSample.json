@@ -1,0 +1,55 @@
+{
+  "campaigns": [
+    {
+      "campaignId": "campaignA",
+      "campaignWeight": 1,
+      "targeting": {
+        "platforms": ["ios"],
+        "locales": ["en", "fr"],
+        "displayAfterLaunch": 3,
+        "startDate": "2025-05-17T00:00:00Z",
+        "endDate": "2025-06-17T00:00:00Z"
+      },
+      "promotions": [
+        {
+          "id": "A1",
+          "title": "Try CoolApp",
+          "description": "Beautiful habit tracker",
+          "iconUrl": "https://cdn.com/icon.png",
+          "bannerUrl": "https://cdn.com/banner.png",
+          "link": "https://apps.apple.com/app/id123456789",
+          "weight": 1,
+          "minDisplayDuration": 3
+        }
+      ]
+    },
+    {
+      "campaignId": "campaignB",
+      "campaignWeight": 2,
+      "targeting": {
+        "platforms": ["ios"],
+        "locales": ["en"]
+      },
+      "promotions": [
+        {
+          "id": "B1",
+          "title": "Meet FocusApp",
+          "description": "Stay focused every day",
+          "iconUrl": "https://cdn.com/icon2.png",
+          "bannerUrl": "https://cdn.com/banner2.png",
+          "link": "https://apps.apple.com/app/id987654321",
+          "weight": 1
+        },
+        {
+          "id": "B2",
+          "title": "FocusApp: Your daily boost",
+          "description": "Get things done beautifully",
+          "iconUrl": "https://cdn.com/icon3.png",
+          "bannerUrl": "https://cdn.com/banner3.png",
+          "link": "https://apps.apple.com/app/id987654321",
+          "weight": 2
+        }
+      ]
+    }
+  ]
+}

@@ -4,21 +4,22 @@
 import PackageDescription
 
 let package = Package(
-    name: "promotable-ios-sdk",
-    products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(
-            name: "promotable-ios-sdk",
-            targets: ["promotable-ios-sdk"]),
-    ],
-    targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .target(
-            name: "promotable-ios-sdk"),
-        .testTarget(
-            name: "promotable-ios-sdkTests",
-            dependencies: ["promotable-ios-sdk"]
-        ),
-    ]
+  name: "promotable-ios-sdk",
+  products: [
+    .library(
+      name: "promotable-ios-sdk",
+      targets: ["promotable-ios-sdk"]),
+  ],
+  targets: [
+    .target(
+      name: "promotable-ios-sdk"
+    ),
+    .testTarget(
+      name: "promotable-ios-sdkTests",
+      dependencies: ["promotable-ios-sdk"],
+      resources: [
+        .process("CampaignsSample.json")
+      ]
+    ),
+  ]
 )
