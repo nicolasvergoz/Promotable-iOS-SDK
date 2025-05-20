@@ -5,6 +5,10 @@ import PackageDescription
 
 let package = Package(
   name: "promotable-ios-sdk",
+  platforms: [
+    .iOS(.v16),
+    .macOS(.v14)
+  ],
   products: [
     .library(
       name: "promotable-ios-sdk",

@@ -1,9 +1,9 @@
 import Foundation
 
-struct Campaign {
+struct Campaign: Identifiable {
   let id: String
   let weight: Int
-  let targeting: Targeting
+  let targeting: Targeting?
   let promotions: [Promotion]
 }
 
@@ -15,7 +15,7 @@ struct Targeting {
   var endDate: Date?
 }
 
-struct Promotion {
+struct Promotion: Identifiable {
   let id: String
   let title: String
   let description: String
