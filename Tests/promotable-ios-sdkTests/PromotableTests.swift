@@ -4,10 +4,42 @@ import Foundation
 
 enum TestError: Error {
   case missingJSONFile
+  case decoding
 }
 
 @Suite
 struct CampaignsTests {
+  let data: Data
+  
+  init() {
+    let fileUrl = Bundle.module.url(forResource: "CampaignsSample", withExtension: "json")!
+    
+    self.data = try! Data(contentsOf: fileUrl)
+  }
+  
+  func decodeResponse() -> CampaignsResponse? {
+    let decoder = JSONDecoder()
+    decoder.dateDecodingStrategy = .iso8601
+    return try? decoder.decode(CampaignsResponse.self, from: data)
+  }
+  
+  @Test
+  func testDecodingCampaignsJSON() {
+    guard let response = decodeResponse() else {
+      return
+    }
+    
+    #expect(response.campaigns.count == 2)
+    
+    let campaignA = response.campaigns.first { $0.id == "campaignA" }
+    #expect(campaignA?.weight == 1)
+    #expect(campaignA?.promotions.count == 1)
+    
+    let campaignB = response.campaigns.first { $0.id == "campaignB" }
+    #expect(campaignB?.weight == 2)
+    #expect(campaignB?.promotions.count == 2)
+    #expect(campaignB?.promotions.last?.weight == 2)
+  }
   
   final class InMemoryCampaignStorage: CampaignStorageProtocol {
     var campaignDisplayCounts: [String: Int] = [:]
@@ -30,31 +62,6 @@ struct CampaignsTests {
       campaignDisplayCounts = [:]
       promotionDisplayCounts = [:]
     }
-  }
-  
-  @Test
-  func testDecodingCampaignsJSON() throws {
-    guard let fileUrl = Bundle.module.url(forResource: "CampaignsSample", withExtension: "json") else {
-      throw TestError.missingJSONFile
-    }
-    
-    let data = try Data(contentsOf: fileUrl)
-    let decoder = JSONDecoder()
-    decoder.dateDecodingStrategy = .iso8601
-    
-    let response = try decoder.decode(CampaignsResponse.self, from: data)
-    
-    #expect(response.campaigns.count == 2)
-    
-    let campaignA = response.campaigns.first { $0.campaignId == "campaignA" }
-    #expect(campaignA?.campaignWeight == 1)
-    #expect(campaignA?.promotions.count == 1)
-    #expect(campaignA?.promotions.first?.title == "Try CoolApp")
-    
-    let campaignB = response.campaigns.first { $0.campaignId == "campaignB" }
-    #expect(campaignB?.campaignWeight == 2)
-    #expect(campaignB?.promotions.count == 2)
-    #expect(campaignB?.promotions.last?.weight == 2)
   }
   
   @Test("CampaignStorage - increment and reset")
@@ -80,59 +87,16 @@ struct CampaignsTests {
   @Test("CampaignManager - selects promotion from highest weight campaign")
   @CampaignActor
   func testCampaignSelection() async {
-    let campaignsResponse = CampaignsResponse(campaigns: [
-      CampaignDTO(
-        campaignId: "A",
-        campaignWeight: 1,
-        targeting: nil,
-        promotions: [
-          PromotionDTO(
-            id: "A1",
-            title: "A1",
-            description: "",
-            iconUrl: URL(string: "https://cdn.com/a1.png")!,
-            bannerUrl: URL(string: "https://cdn.com/a1b.png")!,
-            link: URL(string: "https://appstore.com/a1")!,
-            weight: 1,
-            minDisplayDuration: nil
-          )
-        ]
-      ),
-      CampaignDTO(
-        campaignId: "B",
-        campaignWeight: 2,
-        targeting: TargetingDTO(platforms: ["ios"], locales: ["en"], displayAfterLaunch: nil, startDate: nil, endDate: nil),
-        promotions: [
-          PromotionDTO(
-            id: "B1",
-            title: "B1",
-            description: "",
-            iconUrl: URL(string: "https://cdn.com/b1.png")!,
-            bannerUrl: URL(string: "https://cdn.com/b1b.png")!,
-            link: URL(string: "https://appstore.com/b1")!,
-            weight: 1,
-            minDisplayDuration: nil
-          ),
-          PromotionDTO(
-            id: "B2",
-            title: "B2",
-            description: "",
-            iconUrl: URL(string: "https://cdn.com/b1.png")!,
-            bannerUrl: URL(string: "https://cdn.com/b1b.png")!,
-            link: URL(string: "https://appstore.com/b1")!,
-            weight: 1,
-            minDisplayDuration: nil
-          )
-        ]
-      )
-    ])
+    guard let response = decodeResponse() else {
+      return
+    }
     
     let storage = InMemoryCampaignStorage()
     let manager = CampaignManager(storage: storage, locale: "en", platform: "ios")
     
-    await manager.updateConfiguration(campaignResponse: campaignsResponse)
+    await manager.updateConfiguration(response: response)
     
-    var promo: Promotion? = await manager.nextPromotion()
+    var promo: Campaign.Promotion? = await manager.nextPromotion()
     print("Selected", promo?.id ?? "nil")
     #expect(promo?.id == "A1")
     

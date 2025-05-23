@@ -1,27 +1,64 @@
 import Foundation
 
-struct Campaign: Identifiable {
+struct CampaignsResponse: Codable {
+  let campaigns: [Campaign]
+}
+
+struct Campaign: Identifiable, Codable {
   let id: String
   let weight: Int
-  let targeting: Targeting?
-  let promotions: [Promotion]
+  let target: Campaign.Target?
+  let promotions: [Campaign.Promotion]
 }
 
-struct Targeting {
-  var platforms: [String]?
-  var locales: [String]?
-  var displayAfterLaunch: Int?
-  var startDate: Date?
-  var endDate: Date?
-}
-
-struct Promotion: Identifiable {
-  let id: String
-  let title: String
-  let description: String
-  let link: URL
-  var iconUrl: URL?
-  var bannerUrl: URL?
-  var weight: Int?
-  var minDisplayDuration: Int?
+extension Campaign {
+  struct Target: Codable {
+    let platforms: [String]?
+    let locales: [String]?
+    let displayAfter: Int?
+    let startDate: Date?
+    let endDate: Date?
+  }
+  
+  struct Promotion: Identifiable, Codable {
+    let id: String
+    var title: String?
+    var subtitle: String?
+    var icon: Campaign.Image?
+    var cover: Campaign.Cover?
+    let action: Campaign.Action
+    let content: [Campaign.Content]
+    var weight: Int?
+    var minDisplayDuration: Int?
+  }
+  
+  struct Image: Codable {
+    let imageUrl: URL
+    var alt: String?
+    var size: Campaign.Size?
+  }
+  
+  struct Cover: Codable {
+    var mediaUrl: URL?
+    let mediaType: MediaType
+    var alt: String?
+  }
+  
+  struct Action: Codable {
+    let label: String
+    let url: URL
+  }
+  
+  struct Content: Codable {
+    var image: Image?
+    let description: String
+  }
+  
+  enum Size: String, Codable {
+    case small, medium, large
+  }
+  
+  enum MediaType: String, Codable {
+    case image, video
+  }
 }

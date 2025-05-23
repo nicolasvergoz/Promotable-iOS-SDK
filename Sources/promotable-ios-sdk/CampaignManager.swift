@@ -20,16 +20,16 @@ final class CampaignManager {
     self.platform = platform
   }
   
-  func updateConfiguration(campaignResponse: CampaignsResponse) async {
-    self.campaigns = campaignResponse.domain
+  func updateConfiguration(response: CampaignsResponse) async {
+    self.campaigns = response.campaigns
     
     storage.reset()
   }
   
-  func nextPromotion() async -> Promotion? {
+  func nextPromotion() async -> Campaign.Promotion? {
     // Filter campaigns matching current device context
     let eligibleCampaigns = campaigns.filter {
-      $0.targeting?.matches(locale: locale, platform: platform) ?? true
+      $0.target?.matches(locale: locale, platform: platform) ?? true
     }
     
     guard let selectedCampaign = pickCampaign(
@@ -74,7 +74,7 @@ final class CampaignManager {
     return Balancer(weighted).pick()
   }
   
-  private func pickPromotion(_ entries: [Promotion], weight: (Promotion) -> Int) -> Promotion? {
+  private func pickPromotion(_ entries: [Campaign.Promotion], weight: (Campaign.Promotion) -> Int) -> Campaign.Promotion? {
     let weighted: [Balancer.Entry] = entries.map {
       let displayCounts = storage.getPromotionDisplayCount(for: $0.id)
       return Balancer.Entry(item: $0, weight: weight($0), displayCounts: displayCounts)
@@ -83,7 +83,7 @@ final class CampaignManager {
   }
 }
 
-extension Targeting {
+extension Campaign.Target {
   func matches(locale: String, platform: String) -> Bool {
     if let platforms = platforms, !platforms.contains(platform) {
       return false

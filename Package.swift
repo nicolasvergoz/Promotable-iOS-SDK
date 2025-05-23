@@ -16,14 +16,14 @@ let package = Package(
   ],
   targets: [
     .target(
-      name: "promotable-ios-sdk"
-    ),
-    .testTarget(
-      name: "promotable-ios-sdkTests",
-      dependencies: ["promotable-ios-sdk"],
+      name: "promotable-ios-sdk",
       resources: [
         .process("CampaignsSample.json")
       ]
+    ),
+    .testTarget(
+      name: "promotable-ios-sdkTests",
+      dependencies: ["promotable-ios-sdk"]
     ),
   ]
 )

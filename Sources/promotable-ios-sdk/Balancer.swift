@@ -1,6 +1,6 @@
 import Foundation
 
-struct Balancer<T: Identifiable> {
+final class Balancer<T: Identifiable> {
   struct Entry {
     let item: T
     let weight: Int
