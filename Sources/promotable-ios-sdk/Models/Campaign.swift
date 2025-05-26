@@ -50,7 +50,7 @@ extension Campaign {
   }
   
   struct Content: Codable {
-    var image: Image?
+    var imageURL: URL?
     let description: String
   }
   
