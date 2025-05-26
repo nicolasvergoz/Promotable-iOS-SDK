@@ -18,8 +18,8 @@ This Swift module provides a lightweight and extensible system for managing and 
 - [x] Implement Codable Model
 - [x] Campaigns Manager
 - [x] Default presented Layout
-- [ ] Dominant color top
-- [ ] Presenter
+- [x] Dominant color top
+- [x] Presenter
 - [ ] Clean up
 - [ ] Prepare for public github repository
 
@@ -52,8 +52,10 @@ Create Models to decode the JSON file into Swift structs
 - The layout should be as simple as possible
 
 ## Dominant color top
-- When the cover image is available, take the top 10% of the image and extract the dominant color
-- Use this color as the top border color in the ignored safe area
+- Make a new file for this feature
+- Take the top 10% of an image and extract the dominant color the top 10% of the image to extract the dominant color
+- Use code from this outdated cocoapod: https://github.com/BomberFish/swift-vibrant
+- Use this feature in DefaultPresentedPromotionView.swift as the top border color in the ignored safe area when a cover image is provided
 - Blend the image and the top border color with blur
 - Use the dominant color as action color background, and figure out the text color based on the dominant color
 
@@ -63,11 +65,17 @@ Create Models to decode the JSON file into Swift structs
 - Use CampaignManager to handle what promotion to use
 - When to display is not the responsibility of the module/presenter. Add a parameter so the developer can decide when to trigger de presented view
 
+## Json config fetcher as protocol
+- Make a protocol to fetch the campaign config json file
+- The developer will implement the protocol, so the manager can use it to fetch the json file
+- Provide a default implementation, the simplest possible (json url -> GET url session -> JsonString -> Decode (CampaignsResponse))
+
 ## Clean up
+- Rearrange files and folders
 - Review code, file by file
 - Suggest few code refactors when necessary
-- Add common comments in code when it's tricky
-- Add doc comments on methods and class. With a description when it's needed
+- Add comments in code when it's tricky
+- Add document comments on methods and classes. With a description and example when it's needed
 - Remove any personal identity names from files
 
 ## Prepare for public github repository

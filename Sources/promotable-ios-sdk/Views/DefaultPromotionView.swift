@@ -1,7 +1,8 @@
 import SwiftUI
 import UIKit
 
-struct DefaultPresentedPromotionView: View {
+// TODO: Clean up this file and separate responsiblities
+struct DefaultPromotionView: View {
   let promotion: Campaign.Promotion
   var onDismiss: () -> Void = {}
   var onAction: (URL) -> Void = { _ in }
@@ -233,7 +234,7 @@ struct DefaultPresentedPromotionView: View {
 
 #Preview {
   let promotion = Campaign.Promotion.sample
-  return DefaultPresentedPromotionView(
+  return DefaultPromotionView(
     promotion: promotion,
     onDismiss: { },
     onAction: { url in

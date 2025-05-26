@@ -38,30 +38,7 @@ struct CampaignsTests {
     let campaignB = response.campaigns.first { $0.id == "campaignB" }
     #expect(campaignB?.weight == 2)
     #expect(campaignB?.promotions.count == 2)
-    #expect(campaignB?.promotions.last?.weight == 2)
-  }
-  
-  final class InMemoryCampaignStorage: CampaignStorageProtocol {
-    var campaignDisplayCounts: [String: Int] = [:]
-    var promotionDisplayCounts: [String: Int] = [:]
-    
-    func incrementDisplayCount(campaignId: String, promotionId: String) {
-      campaignDisplayCounts[campaignId, default: 0] += 1
-      promotionDisplayCounts[promotionId, default: 0] += 1
-    }
-    
-    func getCampaignDisplayCount(for id: String) -> Int {
-      return campaignDisplayCounts[id, default: 0]
-    }
-    
-    func getPromotionDisplayCount(for id: String) -> Int {
-      return promotionDisplayCounts[id, default: 0]
-    }
-    
-    func reset() {
-      campaignDisplayCounts = [:]
-      promotionDisplayCounts = [:]
-    }
+    #expect(campaignB?.promotions.last?.weight == 1)
   }
   
   @Test("CampaignStorage - increment and reset")
@@ -85,62 +62,58 @@ struct CampaignsTests {
   }
   
   @Test("CampaignManager - selects promotion from highest weight campaign")
-  @CampaignActor
-  func testCampaignSelection() async {
-    guard let response = decodeResponse() else {
-      return
-    }
-    
+  func testCampaignSelection() async throws {
     let storage = InMemoryCampaignStorage()
     let manager = CampaignManager(storage: storage, locale: "en", platform: "ios")
     
-    await manager.updateConfiguration(response: response)
+    let jsonResponse: String = try #require(String(data: data, encoding: .utf8))
+    try await manager.updateConfiguration(jsonResponse: jsonResponse)
     
     var promo: Campaign.Promotion? = await manager.nextPromotion()
     print("Selected", promo?.id ?? "nil")
-    #expect(promo?.id == "A1")
+    #expect(promo?.id == "a1.acme")
     
     promo = await manager.nextPromotion()
     print("Selected", promo?.id ?? "nil")
-    #expect(promo?.id == "B1")
+    #expect(promo?.id == "b1.aven")
     
     promo = await manager.nextPromotion()
     print("Selected", promo?.id ?? "nil")
-    #expect(promo?.id == "B2")
+    #expect(promo?.id == "b2.update")
     
     promo = await manager.nextPromotion()
     print("Selected", promo?.id ?? "nil")
-    #expect(promo?.id == "A1")
+    #expect(promo?.id == "a1.acme")
     
     promo = await manager.nextPromotion()
     print("Selected", promo?.id ?? "nil")
-    #expect(promo?.id == "B1")
+    #expect(promo?.id == "b1.aven")
     
     promo = await manager.nextPromotion()
     print("Selected", promo?.id ?? "nil")
-    #expect(promo?.id == "B2")
+    #expect(promo?.id == "b2.update")
     
     promo = await manager.nextPromotion()
     print("Selected", promo?.id ?? "nil")
-    #expect(promo?.id == "A1")
+    #expect(promo?.id == "a1.acme")
     
     promo = await manager.nextPromotion()
     print("Selected", promo?.id ?? "nil")
-    #expect(promo?.id == "B1")
+    #expect(promo?.id == "b1.aven")
     
     promo = await manager.nextPromotion()
     print("Selected", promo?.id ?? "nil")
-    #expect(promo?.id == "B2")
+    #expect(promo?.id == "b2.update")
     
     promo = await manager.nextPromotion()
     print("Selected", promo?.id ?? "nil")
-    #expect(promo?.id == "A1")
+    #expect(promo?.id == "a1.acme")
     
     promo = await manager.nextPromotion()
     print("Selected", promo?.id ?? "nil")
-    #expect(promo?.id == "B1")
+    #expect(promo?.id == "b1.aven")
     
-    let stats = manager.getStats()
+    let stats = await manager.getStats()
     print("Display Stats", stats)
   }
   

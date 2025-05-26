@@ -4,7 +4,7 @@ struct CampaignsResponse: Codable {
   let campaigns: [Campaign]
 }
 
-struct Campaign: Identifiable, Codable {
+struct Campaign: Identifiable, Codable, Sendable {
   let id: String
   let weight: Int
   let target: Campaign.Target?
@@ -12,7 +12,7 @@ struct Campaign: Identifiable, Codable {
 }
 
 extension Campaign {
-  struct Target: Codable {
+  struct Target: Codable, Sendable {
     let platforms: [String]?
     let locales: [String]?
     let displayAfter: Int?
@@ -20,7 +20,7 @@ extension Campaign {
     let endDate: Date?
   }
   
-  struct Promotion: Identifiable, Codable {
+  struct Promotion: Identifiable, Codable, Sendable {
     let id: String
     var title: String?
     var subtitle: String?
@@ -34,34 +34,34 @@ extension Campaign {
     // TODO: Action button strategy: providedColor/extractedCoverColor/extractedIconColor/default
   }
   
-  struct Image: Codable {
+  struct Image: Codable, Sendable {
     let imageUrl: URL
     var alt: String?
     var size: Campaign.Size?
   }
   
-  struct Cover: Codable {
+  struct Cover: Codable, Sendable {
     var mediaUrl: URL?
     let mediaType: MediaType
     var mediaHeight: CGFloat?
     var alt: String?
   }
   
-  struct Action: Codable {
+  struct Action: Codable, Sendable {
     let label: String
     let url: URL
   }
   
-  struct Content: Codable {
+  struct Content: Codable, Sendable {
     var imageURL: URL?
     let description: String
   }
   
-  enum Size: String, Codable {
+  enum Size: String, Codable, Sendable {
     case small, medium, large
   }
   
-  enum MediaType: String, Codable {
+  enum MediaType: String, Codable, Sendable {
     case image, video
   }
 }

@@ -1,10 +1,7 @@
 import Foundation
 
-@globalActor actor CampaignActor : GlobalActor {
-  static let shared = CampaignActor()
-}
-
-final class CampaignManager {
+// TODO: Provide the json URL, define a protocol for fetching, and default implementation of the protocol
+actor CampaignManager: Sendable {
   private var campaigns: [Campaign] = []
   private let storage: CampaignStorageProtocol
   var platform: String
@@ -20,10 +17,18 @@ final class CampaignManager {
     self.platform = platform
   }
   
-  func updateConfiguration(response: CampaignsResponse) async {
-    self.campaigns = response.campaigns
-    
-    storage.reset()
+  func updateConfiguration(jsonResponse: String) async throws {
+    do {
+      let decoder = JSONDecoder()
+      decoder.dateDecodingStrategy = .iso8601
+      let data = Data(jsonResponse.utf8)
+      
+      let response = try decoder.decode(CampaignsResponse.self, from: data)
+      self.campaigns = response.campaigns
+      storage.reset()
+    } catch {
+      print("ERROR", error)
+    }
   }
   
   func nextPromotion() async -> Campaign.Promotion? {
