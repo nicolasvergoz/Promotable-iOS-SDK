@@ -1,39 +1,74 @@
 import SwiftUI
+import UIKit
 
 struct DefaultPresentedPromotionView: View {
   let promotion: Campaign.Promotion
   var onDismiss: () -> Void = {}
   var onAction: (URL) -> Void = { _ in }
   
-  @State private var coverHeight: CGFloat = .zero
+  @State private var topSafeAreaInset: CGFloat = .zero
+  @State private var coverYPositon: CGFloat = .zero
+  @State private var coverMaxWidth: CGFloat = .zero
+  @State private var dominantColor: Color? = nil
+  @State private var dominantTextColor: Color = .white
   
   var body: some View {
-    GeometryReader { geometry in
-      ZStack(alignment: .top) {
-        backgroundView()
-        coverImageView()
-        contentScrollView()
-        actionButtonView()
-        closeButtonView()
-      }
+    ZStack(alignment: .top) {
+      backgroundView()
+      contentScrollView()
+      actionButtonView()
+      closeButtonView()
     }
+    .onSafeAreaInset { topSafeAreaInset = $0.top }
   }
   
   @ViewBuilder
   private func backgroundView() -> some View {
-    Color(uiColor: .systemBackground)
-      .ignoresSafeArea()
+    VStack {
+      if let dominantColor = dominantColor {
+        dominantColor
+          .frame(height: coverYPositon)
+      }
+      Color(uiColor: .systemBackground)
+    }
+    .ignoresSafeArea()
   }
   
   @ViewBuilder
   private func coverImageView() -> some View {
+    // TODO: Refact this to download image once. Right now ImageView has an AsyncImage that download the image, and the task do the same to extract dominant color.
     if let coverUrl = promotion.cover?.mediaUrl {
-      ImageView(coverUrl)
-        .frame(maxWidth: .infinity)
-        .onGeometrySizeChange { size in
-          coverHeight = size.height
+      ImageView(coverUrl, contentMode: promotion.cover?.mediaHeight == nil ? .fit : .fill)
+        .frame(maxWidth: coverMaxWidth)
+        .frame(height: promotion.cover?.mediaHeight)
+        .clipped()
+        .overlay(alignment: .top) {
+          if let dominantColor = dominantColor {
+            LinearGradient(
+              gradient: Gradient(colors: [dominantColor, .clear]),
+              startPoint: .top,
+              endPoint: .bottom
+            )
+            .frame(height: 40)
+          }
         }
-        .ignoresSafeArea()
+        .padding(.top, topSafeAreaInset)
+        .onGeometryChange(for: CGFloat.self) { geometry in
+          geometry.frame(in: .named("scrollContentSpace")).maxY
+        } action: { newY in
+          coverYPositon = newY
+        }
+        .task {
+          // Extract dominant color from the image URL
+          if let (data, _) = try? await URLSession.shared.data(from: coverUrl),
+             let uiImage = UIImage(data: data) {
+            if let extractedColor = DominantColorExtractor.extractDominantColor(from: uiImage, topPercentage: 0.1) {
+              let color = Color(extractedColor)
+              dominantColor = color
+              dominantTextColor = DominantColorExtractor.contrastingTextColor(for: color)
+            }
+          }
+        }
     }
   }
   
@@ -41,27 +76,31 @@ struct DefaultPresentedPromotionView: View {
   private func contentScrollView() -> some View {
     ScrollView {
       VStack(spacing: 20) {
-        iconView()
-        titleSubtitleView()
-        Divider().opacity(0.5)
+        coverImageView()
+        topContentView()
         contentItemsView()
       }
-      .padding(.top, promotion.cover?.mediaUrl == nil ? 40 : coverHeight - 40)
-      .padding(.bottom, 50)
+      .onGeometryChange(for: CGFloat.self) { geometry in
+        geometry.size.width
+      } action: { width in
+        coverMaxWidth = width
+      }
+      .padding(.top, promotion.cover?.mediaUrl == nil ? (topSafeAreaInset + 60) : 0)
+      .padding(.bottom, 100)
     }
+    .ignoresSafeArea()
+    .coordinateSpace(name: "scrollContentSpace")
   }
   
   @ViewBuilder
-  private func iconView() -> some View {
+  private func topContentView() -> some View {
+    // Icon
     if let iconUrl = promotion.icon?.imageUrl {
-      ImageView(iconUrl)
+      ImageView(iconUrl, contentMode: .fill)
         .frameSquare(120)
         .cornerRadius(16)
     }
-  }
-  
-  @ViewBuilder
-  private func titleSubtitleView() -> some View {
+    
     VStack(spacing: 0) {
       // Title
       if let title = promotion.title {
@@ -75,10 +114,16 @@ struct DefaultPresentedPromotionView: View {
       // Subtitle
       if let subtitle = promotion.subtitle {
         Text(subtitle)
-          .font(.headline)
+          .font(.body)
           .multilineTextAlignment(.center)
           .foregroundColor(.primary.opacity(0.8))
       }
+    }
+    
+    if promotion.title != nil ||
+        promotion.subtitle != nil ||
+        promotion.icon?.imageUrl != nil {
+      Divider().opacity(0.5)
     }
   }
   
@@ -90,8 +135,7 @@ struct DefaultPresentedPromotionView: View {
           contentItemRow(item: item)
         }
       }
-      .padding(.horizontal)
-      .padding(.top, 8)
+      .padding(.horizontal, 20)
     }
   }
   
@@ -126,8 +170,8 @@ struct DefaultPresentedPromotionView: View {
             .padding(.vertical, 12)
             .padding(.horizontal, 24)
             .frame(maxWidth: .infinity)
-            .background(Color.primary)
-            .foregroundColor(.white)
+            .background(dominantColor ?? Color.primary)
+            .foregroundColor(dominantTextColor)
             .cornerRadius(24)
         }
       )
@@ -150,12 +194,13 @@ struct DefaultPresentedPromotionView: View {
           )
           .opacity(0.5)
       }
+      .padding(.top)
       .padding(.horizontal)
     }
   }
   
   @ViewBuilder
-  private func ImageView(_ url: URL?) -> some View {
+  private func ImageView(_ url: URL?, contentMode: ContentMode = .fit) -> some View {
     if let url {
       AsyncImage(url: url) { phase in
         switch phase {
@@ -168,7 +213,7 @@ struct DefaultPresentedPromotionView: View {
         case .success(let image):
           image
             .resizable()
-            .scaledToFit()
+            .aspectRatio(contentMode: contentMode)
         case .failure(_):
           ZStack {
             Rectangle()
@@ -199,17 +244,18 @@ struct DefaultPresentedPromotionView: View {
 
 extension Campaign.Promotion {
   static let sample: Campaign.Promotion = .init(
-    id: UUID().uuidString,
-    title: "Leocare",
+    id: "promotion1",
+    title: "Some App",
     subtitle: "Une assurance qui vous rassure",
     icon: Campaign.Image(
-      imageUrl: URL(string: "https://raw.githubusercontent.com/nicolasvergoz/vrgz/mock/promotable/mock/logo.jpg")!,
+      imageUrl: URL(string: "https://plus.unsplash.com/premium_photo-1747810311019-a70e477281d9?q=80&w=512&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")!,
       alt: "logo",
       size: .medium
     ),
     cover: Campaign.Cover(
-      mediaUrl: URL(string: "https://raw.githubusercontent.com/nicolasvergoz/vrgz/mock/promotable/mock/banner.png"),
+      mediaUrl: URL(string: "https://images.unsplash.com/photo-1747760866743-97dff7918000?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
       mediaType: .image,
+      mediaHeight: 300,
       alt: "banner"
     ),
     action: Campaign.Action(

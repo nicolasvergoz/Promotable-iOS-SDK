@@ -17,7 +17,8 @@ This Swift module provides a lightweight and extensible system for managing and 
 - [x] Decodable Model
 - [x] Implement Codable Model
 - [x] Campaigns Manager
-- [ ] Default presented Layout
+- [x] Default presented Layout
+- [ ] Dominant color top
 - [ ] Presenter
 - [ ] Clean up
 - [ ] Prepare for public github repository
@@ -48,6 +49,13 @@ Create Models to decode the JSON file into Swift structs
 - Images come from remote URLs
 - Almost everything is optional, so can be ignored in the layout if nil or empty. What is mandatory are, the action button and close button.
 - Only the close button or action button can dismiss the presented view
+- The layout should be as simple as possible
+
+## Dominant color top
+- When the cover image is available, take the top 10% of the image and extract the dominant color
+- Use this color as the top border color in the ignored safe area
+- Blend the image and the top border color with blur
+- Use the dominant color as action color background, and figure out the text color based on the dominant color
 
 ## Presenter
 - ViewModifier that can be put on views to present a promotion

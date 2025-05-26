@@ -30,6 +30,8 @@ extension Campaign {
     let content: [Campaign.Content]
     var weight: Int?
     var minDisplayDuration: Int?
+    // TODO: TopGradientColorStrategy providedColor/extractedCoverColor/none
+    // TODO: Action button strategy: providedColor/extractedCoverColor/extractedIconColor/default
   }
   
   struct Image: Codable {
@@ -41,6 +43,7 @@ extension Campaign {
   struct Cover: Codable {
     var mediaUrl: URL?
     let mediaType: MediaType
+    var mediaHeight: CGFloat?
     var alt: String?
   }
   
