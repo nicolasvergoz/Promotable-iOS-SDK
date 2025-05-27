@@ -18,7 +18,7 @@ let package = Package(
     .target(
       name: "promotable-ios-sdk",
       resources: [
-        .process("CampaignsSample.json")
+        .process("Examples/CampaignsSample.json")
       ]
     ),
     .testTarget(

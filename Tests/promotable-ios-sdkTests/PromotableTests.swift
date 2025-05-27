@@ -118,4 +118,51 @@ struct CampaignsTests {
   }
   
   // TODO: Test: ignore non-eligible promotions (expired date, unmatched platform/locale)
+  
+  @Test("ConfigFetcher - mock implementation")
+  func testConfigFetcher() async throws {
+    // Create a campaign manager
+    let storage = InMemoryCampaignStorage()
+    let manager = CampaignManager(storage: storage, locale: "en", platform: "ios")
+    
+    // Create the mock fetcher that loads from the test bundle
+    let mockFetcher = TestConfigFetcher()
+    
+    // Update campaign config using the fetcher
+    let response = try await manager.updateConfig(using: mockFetcher)
+    
+    // Verify campaigns were loaded correctly
+    #expect(response.campaigns.count == 2)
+    
+    // Verify we can access a campaign promotion using the fetched data
+    let promo = await manager.nextPromotion()
+    #expect(promo != nil)
+    #expect(promo?.id == "a1.acme" || promo?.id == "b1.aven" || promo?.id == "b2.update")
+    
+    // Verify stats are reset when loading new config
+    let stats = await manager.getStats()
+    #expect(stats.campaigns.isEmpty == false)
+    #expect(stats.promotions.isEmpty == false)
+  }
+}
+
+/// Test implementation of ConfigFetcher
+/// Uses the same approach as MockConfigFetcher but adapts for the test environment
+struct TestConfigFetcher: ConfigFetcher {
+  func fetchConfig() async throws -> CampaignsResponse {
+    // Load from the test bundle's CampaignsSample.json file
+    guard let fileUrl = Bundle.module.url(forResource: "CampaignsSample", withExtension: "json") else {
+      throw TestError.missingJSONFile
+    }
+    
+    let data = try Data(contentsOf: fileUrl)
+    let decoder = JSONDecoder()
+    decoder.dateDecodingStrategy = .iso8601
+    
+    do {
+      return try decoder.decode(CampaignsResponse.self, from: data)
+    } catch {
+      throw TestError.decoding
+    }
+  }
 }

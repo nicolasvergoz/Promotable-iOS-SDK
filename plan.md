@@ -20,6 +20,9 @@ This Swift module provides a lightweight and extensible system for managing and 
 - [x] Default presented Layout
 - [x] Dominant color top
 - [x] Presenter
+- [x] Json config fetcher as protocol
+- [ ] Config config file versionning
+- [ ] Rework Targeting
 - [ ] Clean up
 - [ ] Prepare for public github repository
 
@@ -70,7 +73,20 @@ Create Models to decode the JSON file into Swift structs
 - The developer will implement the protocol, so the manager can use it to fetch the json file
 - Provide a default implementation, the simplest possible (json url -> GET url session -> JsonString -> Decode (CampaignsResponse))
 
+## Config config file versionning
+- Choose a technical solution to determine when a json file has changed
+- When the config file has changed, the manager should be notified
+- Keep a record of all the cumulative view count by promotion and campaign ids
+- Reset campaign/promotion display counters when config file has changed
+
+## Rework Targeting
+- Since json can be fetched from different platforms with specific targeting conditions, we should find a new way to handle targeting, based on a collection of key/value.
+- The manager will be initialized with a collection of key/value that will be used to evaluate the targeting conditions.
+- If all the local key/value match the remote key/value, the campaign is eligible.
+- Test new targeting logic in test target
+
 ## Clean up
+- Make the module classes/structs/methods/init/properties public when it's needed outside the module
 - Rearrange files and folders
 - Review code, file by file
 - Suggest few code refactors when necessary

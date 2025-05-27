@@ -1,7 +1,6 @@
 import Foundation
-
-// TODO: Provide the json URL, define a protocol for fetching, and default implementation of the protocol
-actor CampaignManager: Sendable {
+/// Manages campaign configurations, selection, and statistics
+public actor CampaignManager: Sendable {
   private var campaigns: [Campaign] = []
   private let storage: CampaignStorageProtocol
   var platform: String
@@ -17,6 +16,8 @@ actor CampaignManager: Sendable {
     self.platform = platform
   }
   
+  /// Updates the campaign configuration using a string JSON response
+  /// - Parameter jsonResponse: JSON string containing campaign configuration
   func updateConfiguration(jsonResponse: String) async throws {
     do {
       let decoder = JSONDecoder()
@@ -24,11 +25,28 @@ actor CampaignManager: Sendable {
       let data = Data(jsonResponse.utf8)
       
       let response = try decoder.decode(CampaignsResponse.self, from: data)
-      self.campaigns = response.campaigns
-      storage.reset()
+      self.configure(with: response)
     } catch {
       print("ERROR", error)
+      throw ConfigError.decodingFailed(error)
     }
+  }
+  
+  /// Updates the campaign configuration using the provided fetcher
+  /// - Parameter fetcher: An implementation of ConfigFetcher
+  /// - Returns: Updated campaign configuration
+  /// - Throws: Error from the fetcher if configuration cannot be fetched or decoded
+  func updateConfig(using fetcher: ConfigFetcher) async throws -> CampaignsResponse {
+    let response = try await fetcher.fetchConfig()
+    self.configure(with: response)
+    return response
+  }
+  
+  /// Configures the campaign manager with the provided campaign response
+  /// - Parameter response: The campaign response containing campaigns
+  private func configure(with response: CampaignsResponse) {
+    self.campaigns = response.campaigns
+    storage.reset()
   }
   
   func nextPromotion() async -> Campaign.Promotion? {
