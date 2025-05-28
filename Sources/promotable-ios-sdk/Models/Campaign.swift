@@ -15,7 +15,6 @@ extension Campaign {
   struct Target: Codable, Sendable {
     let platforms: [String]?
     let locales: [String]?
-    let displayAfter: Int?
     let startDate: Date?
     let endDate: Date?
   }
@@ -30,8 +29,7 @@ extension Campaign {
     let content: [Campaign.Content]
     var weight: Int?
     var minDisplayDuration: Int?
-    // TODO: TopGradientColorStrategy providedColor/extractedCoverColor/none
-    // TODO: Action button strategy: providedColor/extractedCoverColor/extractedIconColor/default
+    // TODO: Action button color: providedColor/extractedCoverColor/extractedIconColor/default
   }
   
   struct Image: Codable, Sendable {
@@ -42,7 +40,6 @@ extension Campaign {
   
   struct Cover: Codable, Sendable {
     var mediaUrl: URL?
-    let mediaType: MediaType
     var mediaHeight: CGFloat?
     var alt: String?
   }
@@ -59,9 +56,5 @@ extension Campaign {
   
   enum Size: String, Codable, Sendable {
     case small, medium, large
-  }
-  
-  enum MediaType: String, Codable, Sendable {
-    case image, video
   }
 }

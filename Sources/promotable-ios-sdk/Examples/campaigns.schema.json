@@ -1,0 +1,200 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Promotable Campaigns Configuration Schema",
+  "description": "Schema for defining in-app self-promotion campaigns and promotions in the Promotable iOS SDK",
+  "type": "object",
+  "required": ["campaigns"],
+  "properties": {
+    "campaigns": {
+      "type": "array",
+      "description": "List of campaigns containing promotions to be displayed",
+      "items": {
+        "$ref": "#/definitions/campaign"
+      }
+    }
+  },
+  "definitions": {
+    "campaign": {
+      "type": "object",
+      "required": ["id", "promotions"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the campaign"
+        },
+        "weight": {
+          "type": "number",
+          "description": "Relative weight for campaign selection",
+          "default": 1
+        },
+        "target": {
+          "$ref": "#/definitions/target",
+          "description": "Targeting criteria for the campaign"
+        },
+        "promotions": {
+          "type": "array",
+          "description": "List of promotions within this campaign",
+          "items": {
+            "$ref": "#/definitions/promotion"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "properties": {
+        "platforms": {
+          "type": "array",
+          "description": "Platforms where this campaign should be displayed",
+          "items": {
+            "type": "string"
+          }
+        },
+        "locales": {
+          "type": "array",
+          "description": "Locales where this campaign should be displayed (ISO language codes)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start date for campaign availability (ISO 8601 format)"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "End date for campaign availability (ISO 8601 format)"
+        }
+      }
+    },
+    "promotion": {
+      "type": "object",
+      "required": ["id", "action"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the promotion"
+        },
+        "title": {
+          "type": "string",
+          "description": "Main title of the promotion"
+        },
+        "subtitle": {
+          "type": "string",
+          "description": "Secondary text description for the promotion"
+        },
+        "icon": {
+          "$ref": "#/definitions/icon",
+          "description": "Icon image for the promotion"
+        },
+        "cover": {
+          "$ref": "#/definitions/cover",
+          "description": "Cover image or media for the promotion"
+        },
+        "action": {
+          "$ref": "#/definitions/action",
+          "description": "Primary action for the promotion"
+        },
+        "content": {
+          "type": "array",
+          "description": "Content items to display in the promotion",
+          "items": {
+            "$ref": "#/definitions/contentItem"
+          }
+        },
+        "weight": {
+          "type": "number",
+          "description": "Relative weight for promotion selection within a campaign",
+          "default": 1
+        },
+        "minDisplayDuration": {
+          "type": "number",
+          "description": "Minimum time in seconds the promotion should be displayed",
+          "default": 0
+        }
+      }
+    },
+    "icon": {
+      "type": "object",
+      "required": ["imageUrl"],
+      "properties": {
+        "imageUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to the icon image"
+        },
+        "alt": {
+          "type": "string",
+          "description": "Alternative text description of the icon"
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium", "large"],
+          "default": "medium",
+          "description": "Size variant of the icon"
+        }
+      }
+    },
+    "cover": {
+      "type": "object",
+      "required": ["imageUrl"],
+      "properties": {
+        "imageUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to the cover image"
+        },
+        "mediaHeight": {
+          "type": "number",
+          "description": "Height of the media in points"
+        },
+        "alt": {
+          "type": "string",
+          "description": "Alternative text description of the cover"
+        }
+      }
+    },
+    "action": {
+      "type": "object",
+      "required": ["label", "url"],
+      "properties": {
+        "label": {
+          "type": "string",
+          "description": "Text label for the action button"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to open when action is triggered"
+        }
+      }
+    },
+    "contentItem": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "object",
+          "required": ["imageUrl"],
+          "properties": {
+            "imageUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "URL to the content image"
+            },
+            "alt": {
+              "type": "string",
+              "description": "Alternative text description of the image"
+            }
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "Text description for this content item"
+        }
+      }
+    }
+  }
+}

@@ -21,8 +21,10 @@ This Swift module provides a lightweight and extensible system for managing and 
 - [x] Dominant color top
 - [x] Presenter
 - [x] Json config fetcher as protocol
-- [ ] Config config file versionning
+- [x] Create JSON Schema
+- [ ] Add versioning to json schema
 - [ ] Rework Targeting
+- [ ] Config file versionning
 - [ ] Clean up
 - [ ] Prepare for public github repository
 
@@ -73,17 +75,28 @@ Create Models to decode the JSON file into Swift structs
 - The developer will implement the protocol, so the manager can use it to fetch the json file
 - Provide a default implementation, the simplest possible (json url -> GET url session -> JsonString -> Decode (CampaignsResponse))
 
-## Config config file versionning
+## Create JSON Schema
+- Based on the current CampaignsSample.json create a JSON Schema file
+
+## Add versioning to json schema
+- Add a versionning on schema
+- Add a schema version to json file
+- A campaign manager should ask for a specific schema version
+
+## Rework Targeting
+Since json can be fetched from different platforms with specific targeting conditions, we should find a new way to handle targeting, based on a collection of rules with key, condition and values.
+- Add target property to campaign and promotion json
+- Promotion target narrow down campaign target
+- Both are optional
+- The manager will be initialized with a collection of key/value that will be used to evaluate the targeting conditions.
+- If **all** the local key/value match **some** of the rules of targeting from the config campaign and promotion, the campaign is eligible.
+- Test new targeting logic in test target
+
+## Config file versionning
 - Choose a technical solution to determine when a json file has changed
 - When the config file has changed, the manager should be notified
 - Keep a record of all the cumulative view count by promotion and campaign ids
 - Reset campaign/promotion display counters when config file has changed
-
-## Rework Targeting
-- Since json can be fetched from different platforms with specific targeting conditions, we should find a new way to handle targeting, based on a collection of key/value.
-- The manager will be initialized with a collection of key/value that will be used to evaluate the targeting conditions.
-- If all the local key/value match the remote key/value, the campaign is eligible.
-- Test new targeting logic in test target
 
 ## Clean up
 - Make the module classes/structs/methods/init/properties public when it's needed outside the module

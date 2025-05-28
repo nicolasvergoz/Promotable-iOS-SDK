@@ -63,7 +63,7 @@ struct DefaultPromotionView: View {
           // Extract dominant color from the image URL
           if let (data, _) = try? await URLSession.shared.data(from: coverUrl),
              let uiImage = UIImage(data: data) {
-            if let extractedColor = DominantColorExtractor.extractDominantColor(from: uiImage, topPercentage: 0.1) {
+            if let extractedColor = DominantColorExtractor.extractDominantColor(from: uiImage, topPercentage: 1.0) {
               let color = Color(extractedColor)
               dominantColor = color
               dominantTextColor = DominantColorExtractor.contrastingTextColor(for: color)
