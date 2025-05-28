@@ -8,7 +8,7 @@
         "platforms": [
           "ios"
         ],
-        "locales": [
+        "languages": [
           "en",
           "fr"
         ],
@@ -62,7 +62,7 @@
         "platforms": [
           "ios"
         ],
-        "locales": [
+        "languages": [
           "en"
         ]
       },

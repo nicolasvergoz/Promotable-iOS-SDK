@@ -1,7 +1,7 @@
 **Promotable** is a swift package to manage and display in-app self-promotion campaigns.
 
 ## Description
-This Swift module provides a lightweight and extensible system for managing and displaying in-app self-promotion campaigns. It handles remote configuration of campaigns and promotions through a structured JSON format, supports targeting by platform and locale, and balances display frequencies using weighted logic. Designed with Swift Concurrency and SwiftUI in mind, the module provide a default SwiftUI implementation to present promotional interstitials. It tracks impressions, respects display rules, and adapts dynamically as new content is pushed remotely, making it ideal for developers who want to promote their own apps, updates, or affiliated projects within their mobile portfolio.
+This Swift module provides a lightweight and extensible system for managing and displaying in-app self-promotion campaigns. It handles remote configuration of campaigns and promotions through a structured JSON format, supports targeting by platform and language, and balances display frequencies using weighted logic. Designed with Swift Concurrency and SwiftUI in mind, the module provide a default SwiftUI implementation to present promotional interstitials. It tracks impressions, respects display rules, and adapts dynamically as new content is pushed remotely, making it ideal for developers who want to promote their own apps, updates, or affiliated projects within their mobile portfolio.
 
 ## Dev Project
 - The module is a Swift Package, with clear separation of concerns and responsibilities
@@ -24,7 +24,7 @@ This Swift module provides a lightweight and extensible system for managing and 
 - [x] Create JSON Schema
 - [x] Add versioning to json schema
 - [x] Separate stats and balancing
-- [ ] Test promotion eligibility
+- [ ] Test promotion target eligibility
 - [ ] Config file versionning
 - [ ] Clean up
 - [ ] Prepare for public github repository
@@ -45,7 +45,7 @@ Create Models to decode the JSON file into Swift structs
 - Select what promotion to display by campaign and promotion weight to balance the visibility of each.
 - Store displaying data for balancing and stats
 - Reset data when configuration has changed
-- Handle targeting conditions (locale, platform)
+- Handle targeting conditions (language, platform)
 
 ## Default presented Layout
 - The module can present a promotion with a built-in SwiftUI layout by default
@@ -90,7 +90,7 @@ Create Models to decode the JSON file into Swift structs
 - Increment both counters when a promotion is displayed
 - When the config file has changed, reset only the current display counters
 
-## Test promotion eligibility
+## Test promotion target eligibility
 - Test if a campaign is eligible to be displayed based target parameter
 
 ## Config versionning

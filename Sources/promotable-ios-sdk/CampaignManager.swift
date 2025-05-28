@@ -13,23 +13,23 @@ public actor CampaignManager: Sendable {
   private let cumulativeStorage: CampaignStorageProtocol
   
   var platform: String
-  var locale: String
+  var language: String
   
   /// Initialize the campaign manager with a targeting context
   /// - Parameters:
   ///   - balancingStorage: Storage implementation for balancing campaign display counts (resets on config change)
   ///   - statsStorage: Storage implementation for cumulative display statistics (persists across config changes)
-  ///   - locale: Current locale for targeting, defaults to "en"
+  ///   - language: Current language for targeting, defaults to "en"
   ///   - platform: Current platform for targeting, defaults to "ios"
   init(
     balancingStorage: CampaignStorageProtocol = BalancingCampaignStorage(),
     cumulativeStorage: CampaignStorageProtocol = CampaignStorageCumulative(),
-    locale: String = "en",
+    language: String = "en",
     platform: String = "ios"
   ) {
     self.balancingStorage = balancingStorage
     self.cumulativeStorage = cumulativeStorage
-    self.locale = locale
+    self.language = language
     self.platform = platform
   }
   
@@ -70,7 +70,7 @@ public actor CampaignManager: Sendable {
   func nextPromotion() async -> Campaign.Promotion? {
     // Filter campaigns matching current device context
     let eligibleCampaigns = campaigns.filter {
-      $0.target?.matches(locale: locale, platform: platform) ?? true
+      $0.target?.matches(language: language, platform: platform) ?? true
     }
     
     guard let selectedCampaign = pickCampaign(
@@ -112,8 +112,8 @@ public actor CampaignManager: Sendable {
     )
   }
   
-  func setLocale(_ locale: String) {
-    self.locale = locale
+  func setLanguage(_ language: String) {
+    self.language = language
   }
   
   func setPlatform(_ platform: String) {
@@ -148,12 +148,12 @@ public actor CampaignManager: Sendable {
 }
 
 extension Campaign.Target {
-  func matches(locale: String, platform: String) -> Bool {
+  func matches(language: String, platform: String) -> Bool {
     if let platforms = platforms, !platforms.contains(platform) {
       return false
     }
     
-    if let locales = locales, !locales.contains(locale) {
+    if let languages = languages, !languages.contains(language) {
       return false
     }
     return true

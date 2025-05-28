@@ -14,7 +14,7 @@ struct Campaign: Identifiable, Codable, Sendable {
 extension Campaign {
   struct Target: Codable, Sendable {
     let platforms: [String]?
-    let locales: [String]?
+    let languages: [String]?
     let startDate: Date?
     let endDate: Date?
   }

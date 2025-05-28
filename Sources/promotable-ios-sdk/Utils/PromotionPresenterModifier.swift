@@ -73,7 +73,7 @@ extension View {
   @Previewable @State var isPresented: Bool = false
   
   let manager = CampaignManager(
-    locale: "en",
+    language: "en",
     platform: "ios"
   )
   

@@ -55,9 +55,9 @@
             "type": "string"
           }
         },
-        "locales": {
+        "languages": {
           "type": "array",
-          "description": "Locales where this campaign should be displayed (ISO language codes)",
+          "description": "Languages where this campaign should be displayed (ISO language codes)",
           "items": {
             "type": "string"
           }

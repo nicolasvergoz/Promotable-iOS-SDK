@@ -194,4 +194,6 @@ struct TestConfigFetcher: ConfigFetcher {
       throw TestError.decoding
     }
   }
+
+  // TODO: Test: ignore non-eligible promotions (expired date, unmatched platform/language)
 }
