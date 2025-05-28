@@ -149,13 +149,30 @@ public actor CampaignManager: Sendable {
 
 extension Campaign.Target {
   func matches(language: String, platform: String) -> Bool {
+    // Check platform targeting
     if let platforms = platforms, !platforms.contains(platform) {
       return false
     }
     
+    // Check language targeting
     if let languages = languages, !languages.contains(language) {
       return false
     }
+    
+    // Check date range targeting
+    let currentDate = Date()
+    
+    // If there's a start date and current date is before it, campaign is not yet active
+    if let startDate = startDate, currentDate < startDate {
+      return false
+    }
+    
+    // If there's an end date and current date is after it, campaign has expired
+    if let endDate = endDate, currentDate > endDate {
+      return false
+    }
+    
+    // All targeting conditions passed
     return true
   }
 }

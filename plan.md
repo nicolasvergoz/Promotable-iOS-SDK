@@ -24,7 +24,7 @@ This Swift module provides a lightweight and extensible system for managing and 
 - [x] Create JSON Schema
 - [x] Add versioning to json schema
 - [x] Separate stats and balancing
-- [ ] Test promotion target eligibility
+- [x] Test promotion target eligibility
 - [ ] Config file versionning
 - [ ] Clean up
 - [ ] Prepare for public github repository
