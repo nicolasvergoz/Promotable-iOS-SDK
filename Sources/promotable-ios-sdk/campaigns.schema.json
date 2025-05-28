@@ -18,7 +18,6 @@
     }
   },
   "definitions": {
-  "definitions": {
     "campaign": {
       "type": "object",
       "required": ["id", "promotions"],
@@ -46,7 +45,6 @@
         }
       }
     },
-    "target": {
     "target": {
       "type": "object",
       "properties": {

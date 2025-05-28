@@ -10,23 +10,21 @@ enum TestError: Error {
 
 @Suite
 struct CampaignsTests {
-  let data: Data
+  let jsonSample: String
   
   init() {
     let fileUrl = Bundle.module.url(forResource: "CampaignsSample", withExtension: "json")!
-    
-    self.data = try! Data(contentsOf: fileUrl)
-  }
-  
-  func decodeResponse() -> CampaignsResponse? {
-    let decoder = JSONDecoder()
-    decoder.dateDecodingStrategy = .iso8601
-    return try? decoder.decode(CampaignsResponse.self, from: data)
+    let data = try! Data(contentsOf: fileUrl)
+    self.jsonSample = String(data: data, encoding: .utf8)!
   }
   
   @Test
   func testDecodingCampaignsJSON() {
-    guard let response = decodeResponse() else {
+    let decoder = JSONDecoder()
+    decoder.dateDecodingStrategy = .iso8601
+    let data = jsonSample.data(using: .utf8)!
+    
+    guard let response = try? decoder.decode(CampaignsResponse.self, from: data) else {
       return
     }
     
@@ -64,11 +62,14 @@ struct CampaignsTests {
   
   @Test("CampaignManager - selects promotion from highest weight campaign")
   func testCampaignSelection() async throws {
-    let storage = InMemoryCampaignStorage()
-    let manager = CampaignManager(storage: storage, locale: "en", platform: "ios")
+    // Create a fresh storage instance for this test
+    let manager = CampaignManager(
+      storage: InMemoryCampaignStorage()
+    )
     
-    let jsonResponse: String = try #require(String(data: data, encoding: .utf8))
-    try await manager.updateConfiguration(jsonResponse: jsonResponse)
+    // Create the mock fetcher that loads from the test bundle
+    let mockFetcher = TestConfigFetcher(json: jsonSample)
+    try await manager.updateConfig(using: mockFetcher)
     
     var promo: Campaign.Promotion? = await manager.nextPromotion()
     print("Selected", promo?.id ?? "nil")
@@ -122,18 +123,19 @@ struct CampaignsTests {
   
   @Test("ConfigFetcher - mock implementation")
   func testConfigFetcher() async throws {
-    // Create a campaign manager
-    let storage = InMemoryCampaignStorage()
-    let manager = CampaignManager(storage: storage, locale: "en", platform: "ios")
+    // Create a campaign manager with a fresh storage instance
+    let manager = CampaignManager(
+      storage: InMemoryCampaignStorage()
+    )
     
     // Create the mock fetcher that loads from the test bundle
-    let mockFetcher = TestConfigFetcher()
+    let mockFetcher = TestConfigFetcher(json: jsonSample)
     
     // Update campaign config using the fetcher
-    let response = try await manager.updateConfig(using: mockFetcher)
+    try await manager.updateConfig(using: mockFetcher)
     
     // Verify campaigns were loaded correctly
-    #expect(response.campaigns.count == 2)
+    #expect(await manager.campaigns.count == 2)
     
     // Verify we can access a campaign promotion using the fetched data
     let promo = await manager.nextPromotion()
@@ -151,18 +153,18 @@ struct CampaignsTests {
 /// Uses the same approach as MockConfigFetcher but adapts for the test environment
 struct TestConfigFetcher: ConfigFetcher {
   let requiredSchemaVersion: String
+  let json: String
   
-  init(requiredSchemaVersion: String = "0.1.0") {
+  init(json: String, requiredSchemaVersion: String = "0.1.0") {
+    self.json = json
     self.requiredSchemaVersion = requiredSchemaVersion
   }
   
   func fetchConfig() async throws -> CampaignsResponse {
     // Load from the test bundle's CampaignsSample.json file
-    guard let fileUrl = Bundle.module.url(forResource: "CampaignsSample", withExtension: "json") else {
-      throw TestError.missingJSONFile
+    guard let data = json.data(using: .utf8) else {
+      throw TestError.decoding
     }
-    
-    let data = try Data(contentsOf: fileUrl)
     
     // First, parse the JSON to check schema version
     do {

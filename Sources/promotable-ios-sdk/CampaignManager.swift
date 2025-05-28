@@ -1,11 +1,14 @@
 import Foundation
 /// Manages campaign configurations, selection, and statistics
 public actor CampaignManager: Sendable {
-  private var campaigns: [Campaign] = []
+  var campaigns: [Campaign] = []
   private let storage: CampaignStorageProtocol
   var platform: String
   var locale: String
   
+  /// Initialize the campaign manager with a targeting context
+  /// - Parameters:
+  ///   - storage: Storage implementation for campaign display counts
   init(
     storage: CampaignStorageProtocol = CampaignStorage(),
     locale: String = "en",
@@ -34,17 +37,15 @@ public actor CampaignManager: Sendable {
   
   /// Updates the campaign configuration using the provided fetcher
   /// - Parameter fetcher: An implementation of ConfigFetcher
-  /// - Returns: Updated campaign configuration
   /// - Throws: Error from the fetcher if configuration cannot be fetched or decoded
-  func updateConfig(using fetcher: ConfigFetcher) async throws -> CampaignsResponse {
+  func updateConfig(using fetcher: ConfigFetcher) async throws {
     let response = try await fetcher.fetchConfig()
     self.configure(with: response)
-    return response
   }
   
   /// Configures the campaign manager with the provided campaign response
   /// - Parameter response: The campaign response containing campaigns
-  private func configure(with response: CampaignsResponse) {
+  func configure(with response: CampaignsResponse) {
     self.campaigns = response.campaigns
     storage.reset()
   }

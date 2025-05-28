@@ -95,11 +95,9 @@ extension View {
     let fileUrl = Bundle.module.url(forResource: "CampaignsSample", withExtension: "json")!
     
     do {
-      let data = try Data(contentsOf: fileUrl)
-      guard let jsonResponse: String = try String(data: data, encoding: .utf8) else {
-        return
-      }
-      try await manager.updateConfiguration(jsonResponse: jsonResponse)
+      // Create a custom fetcher that loads from a local JSON file
+      let mockFetcher = MockConfigFetcher()
+      try await manager.updateConfig(using: mockFetcher)
     } catch {
       print("ERROR", error)
     }
