@@ -3,8 +3,12 @@
   "title": "Promotable Campaigns Configuration Schema",
   "description": "Schema for defining in-app self-promotion campaigns and promotions in the Promotable iOS SDK",
   "type": "object",
-  "required": ["campaigns"],
+  "required": ["schemaVersion", "campaigns"],
   "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "description": "Version of the schema being used"
+    },
     "campaigns": {
       "type": "array",
       "description": "List of campaigns containing promotions to be displayed",
@@ -13,6 +17,7 @@
       }
     }
   },
+  "definitions": {
   "definitions": {
     "campaign": {
       "type": "object",
@@ -41,6 +46,7 @@
         }
       }
     },
+    "target": {
     "target": {
       "type": "object",
       "properties": {

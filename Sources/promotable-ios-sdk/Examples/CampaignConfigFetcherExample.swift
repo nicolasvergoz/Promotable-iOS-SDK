@@ -13,7 +13,7 @@ struct ConfigFetcherExample {
     
     // Create the default fetcher with a config URL
     let configURL = URL(string: "https://example.com/campaigns.json")!
-    let defaultFetcher = DefaultConfigFetcher(configURL: configURL)
+    let defaultFetcher = DefaultConfigFetcher(configURL: configURL, requiredSchemaVersion: "0.1.0")
     
     do {
       // Use the fetcher to update campaign config

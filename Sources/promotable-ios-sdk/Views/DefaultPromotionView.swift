@@ -255,7 +255,6 @@ extension Campaign.Promotion {
     ),
     cover: Campaign.Cover(
       mediaUrl: URL(string: "https://images.unsplash.com/photo-1747760866743-97dff7918000?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
-      mediaType: .image,
       mediaHeight: 300,
       alt: "banner"
     ),

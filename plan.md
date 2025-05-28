@@ -22,7 +22,7 @@ This Swift module provides a lightweight and extensible system for managing and 
 - [x] Presenter
 - [x] Json config fetcher as protocol
 - [x] Create JSON Schema
-- [ ] Add versioning to json schema
+- [x] Add versioning to json schema
 - [ ] Rework Targeting
 - [ ] Config file versionning
 - [ ] Clean up
@@ -81,22 +81,42 @@ Create Models to decode the JSON file into Swift structs
 ## Add versioning to json schema
 - Add a versionning on schema
 - Add a schema version to json file
-- A campaign manager should ask for a specific schema version
+- ConfigFetcher implementations validate schema version before decoding the full model
 
 ## Rework Targeting
-Since json can be fetched from different platforms with specific targeting conditions, we should find a new way to handle targeting, based on a collection of rules with key, condition and values.
-- Add target property to campaign and promotion json
+Since json can be fetched from different platforms with specific targeting criterias, we should find a new way to handle targeting, based on a collection of rules with key, condition and values.
+Like: plateform, device, locale, appVersion, region, in-app page, website page type, web page zoning, etc.
+
+Here is a suggestion sample of the target property:
+
+```json
+"target": {
+  "rules": [
+    { "key": "platform", "op": "equals", "value": "ios" },
+    { "key": "language", "op": "in", "value": ["en", "fr"] },
+    { "key": "appVersion", "op": "greaterThanOrEqual", "value": "2.1.0" },
+    { "key": "deviceType", "op": "equals", "value": "tablet" },
+    { "key": "page", "op": "equals", "value": "Home" },
+    { "key": "region", "op": "notEquals", "value": "CN" }
+  ],
+  "startDate": "2025-05-17T00:00:00Z",
+  "endDate": "2025-06-17T00:00:00Z"
+}
+```
+
+- Challenge this approach and validate if ok
+- Add target property to campaign and promotion json. We add target on both because we could have a campaign targeting ios, and a promotion targeting french.
 - Promotion target narrow down campaign target
 - Both are optional
 - The manager will be initialized with a collection of key/value that will be used to evaluate the targeting conditions.
-- If **all** the local key/value match **some** of the rules of targeting from the config campaign and promotion, the campaign is eligible.
-- Test new targeting logic in test target
+- Do not update the json schema version, I'm still developing the first version.
+- If **all** the local key/value match **some** of the rules of targeting from the config campaign and promotion, the campaign is eligible. Update CampaignManager to handle this logic.
+- Test the new targeting logic in the module test target
 
-## Config file versionning
-- Choose a technical solution to determine when a json file has changed
-- When the config file has changed, the manager should be notified
-- Keep a record of all the cumulative view count by promotion and campaign ids
-- Reset campaign/promotion display counters when config file has changed
+## Config versionning
+- Chat: Choose a technical solution to determine when to reset the current display counters
+- When the config file has changed, the manager should act accordingly
+- Keep a record of all the cumulative view count by promotion and campaign ids but reset the current display weight balancing mechanism
 
 ## Clean up
 - Make the module classes/structs/methods/init/properties public when it's needed outside the module
