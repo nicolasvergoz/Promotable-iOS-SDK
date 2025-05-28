@@ -1,8 +1,5 @@
 import Foundation
 
-// This file contains examples of how to use the ConfigFetcher protocol
-// and is not part of the actual SDK implementation
-
 /// Example showing how to use the ConfigFetcher protocol
 struct ConfigFetcherExample {
   

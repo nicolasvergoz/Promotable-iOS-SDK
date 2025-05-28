@@ -16,8 +16,8 @@ public actor CampaignManager: Sendable {
   /// These stats persist across configuration changes
   private let cumulativeStorage: CampaignStorageProtocol
   
-  var platform: String
-  var language: String
+  public var platform: String
+  public var language: String
   
   /// Initialize the campaign manager with a targeting context
   /// - Parameters:
@@ -25,7 +25,7 @@ public actor CampaignManager: Sendable {
   ///   - statsStorage: Storage implementation for cumulative display statistics (persists across config changes)
   ///   - language: Current language for targeting, defaults to "en"
   ///   - platform: Current platform for targeting, defaults to "ios"
-  init(
+  public init(
     balancingStorage: CampaignStorageProtocol = BalancingCampaignStorage(),
     cumulativeStorage: CampaignStorageProtocol = CampaignStorageCumulative(),
     language: String = "en",
@@ -37,26 +37,10 @@ public actor CampaignManager: Sendable {
     self.platform = platform
   }
   
-  /// Updates the campaign configuration using a string JSON response
-  /// - Parameter jsonResponse: JSON string containing campaign configuration
-  func updateConfiguration(jsonResponse: String) async throws {
-    do {
-      let decoder = JSONDecoder()
-      decoder.dateDecodingStrategy = .iso8601
-      let data = Data(jsonResponse.utf8)
-      
-      let response = try decoder.decode(CampaignsResponse.self, from: data)
-      self.configure(with: response)
-    } catch {
-      print("ERROR", error)
-      throw ConfigError.decodingFailed(error)
-    }
-  }
-  
   /// Updates the campaign configuration using the provided fetcher
   /// - Parameter fetcher: An implementation of ConfigFetcher
   /// - Throws: Error from the fetcher if configuration cannot be fetched or decoded
-  func updateConfig(using fetcher: ConfigFetcher) async throws {
+  public func updateConfig(using fetcher: ConfigFetcher) async throws {
     let response = try await fetcher.fetchConfig()
     self.configure(with: response)
   }
@@ -65,7 +49,7 @@ public actor CampaignManager: Sendable {
   /// - Parameter response: The campaign response containing campaigns
   /// - Returns: Bool indicating if the configuration actually changed
   @discardableResult
-  func configure(with response: CampaignsResponse) -> Bool {
+  public func configure(with response: CampaignsResponse) -> Bool {
     let newHash = hashCampaigns(response.campaigns)
     let changed = (configHash == nil) || (configHash != newHash)
     if changed {
@@ -94,14 +78,14 @@ public actor CampaignManager: Sendable {
   /// Checks if a given campaigns array would change the current config
   /// - Parameter newCampaigns: The new campaigns to check
   /// - Returns: Bool indicating if the config would change
-  func wouldConfigChange(with newCampaigns: [Campaign]) -> Bool {
+  public func wouldConfigChange(with newCampaigns: [Campaign]) -> Bool {
     let newHash = hashCampaigns(newCampaigns)
     return configHash == nil || configHash != newHash
   }
   
   /// Get the next promotion to display based on eligibility and weighted balancing
   /// - Returns: A promotion to display, or nil if none available
-  func nextPromotion() async -> Campaign.Promotion? {
+  public func nextPromotion() async -> Campaign.Promotion? {
     // Filter campaigns matching current device context
     let eligibleCampaigns = campaigns.filter {
       $0.target?.matches(language: language, platform: platform) ?? true
@@ -130,7 +114,7 @@ public actor CampaignManager: Sendable {
   
   /// Get cumulative display statistics across all configurations
   /// - Returns: DisplayStats containing campaign and promotion view counts
-  func getStats() -> DisplayStats {
+  public func getStats() -> DisplayStats {
     DisplayStats(
       campaigns: cumulativeStorage.campaignCount,
       promotions: cumulativeStorage.promotionCount
@@ -139,18 +123,18 @@ public actor CampaignManager: Sendable {
   
   /// Get current balancing display counts (resets when configuration changes)
   /// - Returns: DisplayStats containing campaign and promotion current balancing counts
-  func getBalancingStats() -> DisplayStats {
+  public func getBalancingStats() -> DisplayStats {
     DisplayStats(
       campaigns: balancingStorage.campaignCount,
       promotions: balancingStorage.promotionCount
     )
   }
   
-  func setLanguage(_ language: String) {
+  public func setLanguage(_ language: String) {
     self.language = language
   }
   
-  func setPlatform(_ platform: String) {
+  public func setPlatform(_ platform: String) {
     self.platform = platform
   }
   

@@ -1,14 +1,14 @@
 import Foundation
 
 /// Persistent storage for cumulative campaign and promotion display statistics
-final class CampaignStorageCumulative: CampaignStorageProtocol {
-  var campaignCount: [String : Int] = [:]
-  var promotionCount: [String : Int] = [:]
+public final class CampaignStorageCumulative: CampaignStorageProtocol {
+  public var campaignCount: [String : Int] = [:]
+  public var promotionCount: [String : Int] = [:]
   
   private let campaignsKey = "com.promotable.sdk.cumulativecampaignCount"
   private let promotionsKey = "com.promotable.sdk.cumulativepromotionCount"
   
-  init() {
+  public init() {
     load()
   }
   
@@ -33,21 +33,21 @@ final class CampaignStorageCumulative: CampaignStorageProtocol {
     }
   }
   
-  func incrementDisplayCount(campaignId: String, promotionId: String) {
+  public func incrementDisplayCount(campaignId: String, promotionId: String) {
     campaignCount[campaignId, default: 0] += 1
     promotionCount[promotionId, default: 0] += 1
     save()
   }
   
-  func getCampaignDisplayCount(for id: String) -> Int {
+  public func getCampaignDisplayCount(for id: String) -> Int {
     return campaignCount[id, default: 0]
   }
   
-  func getPromotionDisplayCount(for id: String) -> Int {
+  public func getPromotionDisplayCount(for id: String) -> Int {
     return promotionCount[id, default: 0]
   }
   
-  func reset() {
+  public func reset() {
     // No need to reset for the moment
   }
 }

@@ -3,14 +3,14 @@ import Foundation
 
 /// Implementation of CampaignStorageProtocol for tracking display balancing in memory
 /// These counts are reset when campaign configuration changes
-final class BalancingCampaignStorage: CampaignStorageProtocol {
+public final class BalancingCampaignStorage: CampaignStorageProtocol {
   private let campaignsKey = "com.promotable.sdk.balancingCampaignCounts"
   private let promotionsKey = "com.promotable.sdk.balancingPromotionCounts"
   
-  var campaignCount: [String: Int] = [:]
-  var promotionCount: [String: Int] = [:]
+  public var campaignCount: [String: Int] = [:]
+  public var promotionCount: [String: Int] = [:]
   
-  init() {
+  public init() {
     load()
   }
   
@@ -35,21 +35,21 @@ final class BalancingCampaignStorage: CampaignStorageProtocol {
     }
   }
   
-  func incrementDisplayCount(campaignId: String, promotionId: String) {
+  public func incrementDisplayCount(campaignId: String, promotionId: String) {
     campaignCount[campaignId, default: 0] += 1
     promotionCount[promotionId, default: 0] += 1
     save()
   }
   
-  func getCampaignDisplayCount(for id: String) -> Int {
+  public func getCampaignDisplayCount(for id: String) -> Int {
     return campaignCount[id, default: 0]
   }
   
-  func getPromotionDisplayCount(for id: String) -> Int {
+  public func getPromotionDisplayCount(for id: String) -> Int {
     return promotionCount[id, default: 0]
   }
   
-  func reset() {
+  public func reset() {
     campaignCount = [:]
     promotionCount = [:]
     UserDefaults.standard.removeObject(forKey: campaignsKey)

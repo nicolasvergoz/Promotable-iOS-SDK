@@ -1,61 +1,61 @@
 import Foundation
 import CoreGraphics
 
-struct CampaignsResponse: Codable, Hashable {
-  let campaigns: [Campaign]
+public struct CampaignsResponse: Codable, Hashable, Sendable {
+  public let campaigns: [Campaign]
 }
 
-struct Campaign: Identifiable, Codable, Sendable, Hashable {
-  let id: String
-  let weight: Int
-  let target: Campaign.Target?
-  let promotions: [Campaign.Promotion]
+public struct Campaign: Identifiable, Codable, Sendable, Hashable {
+  public let id: String
+  public let weight: Int
+  public let target: Campaign.Target?
+  public let promotions: [Campaign.Promotion]
 }
 
 extension Campaign {
-  struct Target: Codable, Sendable, Hashable {
-    let platforms: [String]?
-    let languages: [String]?
-    let startDate: Date?
-    let endDate: Date?
+  public struct Target: Codable, Sendable, Hashable {
+    public let platforms: [String]?
+    public let languages: [String]?
+    public let startDate: Date?
+    public let endDate: Date?
   }
   
-  struct Promotion: Identifiable, Codable, Sendable, Hashable {
-    let id: String
-    var title: String?
-    var subtitle: String?
-    var icon: Campaign.Image?
-    var cover: Campaign.Cover?
-    let action: Campaign.Action
-    let content: [Campaign.Content]
-    var weight: Int?
-    var minDisplayDuration: Int?
+  public struct Promotion: Identifiable, Codable, Sendable, Hashable {
+    public let id: String
+    public var title: String?
+    public var subtitle: String?
+    public var icon: Campaign.Image?
+    public var cover: Campaign.Cover?
+    public let action: Campaign.Action
+    public let content: [Campaign.Content]
+    public var weight: Int?
+    public var minDisplayDuration: Int?
     // TODO: Action button color: providedColor/extractedCoverColor/extractedIconColor/default
   }
   
-  struct Image: Codable, Sendable, Hashable {
-    let imageUrl: URL
-    var alt: String?
-    var size: Campaign.Size?
+  public struct Image: Codable, Sendable, Hashable {
+    public let imageUrl: URL
+    public var alt: String?
+    public var size: Campaign.Size?
   }
   
-  struct Cover: Codable, Sendable, Hashable {
-    var mediaUrl: URL?
-    var mediaHeight: CGFloat?
-    var alt: String?
+  public struct Cover: Codable, Sendable, Hashable {
+    public var mediaUrl: URL?
+    public var mediaHeight: CGFloat?
+    public var alt: String?
   }
   
-  struct Action: Codable, Sendable, Hashable {
-    let label: String
-    let url: URL
+  public struct Action: Codable, Sendable, Hashable {
+    public let label: String
+    public let url: URL
   }
   
-  struct Content: Codable, Sendable, Hashable {
-    var imageURL: URL?
-    let description: String
+  public struct Content: Codable, Sendable, Hashable {
+    public var imageURL: URL?
+    public let description: String
   }
   
-  enum Size: String, Codable, Sendable, Hashable {
+  public enum Size: String, Codable, Sendable, Hashable {
     case small, medium, large
   }
 }

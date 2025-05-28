@@ -26,7 +26,7 @@ This Swift module provides a lightweight and extensible system for managing and 
 - [x] Separate stats and balancing
 - [x] Test promotion target eligibility
 - [x] Config versioning
-- [ ] Clean up
+- [ ] Clean up code base
 - [ ] Prepare for public github repository
 
 ## Setup Swift Module
@@ -102,15 +102,14 @@ Create Models to decode the JSON file into Swift structs
 - [x] Keep the record of all the cumulative view count but reset the current display weight balancing stats. -> This was already part of `CampaignManager` logic, now triggered by hash change.
 - [x] Test config change, and check for stats are reset and cumulative are persisted.
 
-## Clean up
-- Make the module's classes/structs/methods/init/properties public when it's needed outside the module
-- Rearrange files and folders
-- Suggest better namings for files, folders, classes, methods, properties, etc.
-- Add comments in code when it's tricky
-- Remove comments when the code is clear
-- Add documentation comments on methods and classes. With a description and example when it's needed
-- Remove any personal identity names from files
-- Review code, file by file. Add comments "// FEEDBACK: " for suggestions
+## Clean up code base
+- [x] Make the module's classes/structs/methods/init/properties public when it's needed outside the module
+- [x] Rearrange files and folders
+- [x] Suggest better namings for files, folders, classes, methods, properties, etc.
+- [ ] Add comments in code when it's tricky and remove comments when the code is clear
+- [ ] Add documentation comments on methods and classes. With a description and example when it's needed
+- [ ] Remove any personal identity names from files
+- [ ] Review code, file by file. Add comments "// FEEDBACK: " for suggestions
 
 ## Prepare for public github repository
 - Add a README file to explain the code

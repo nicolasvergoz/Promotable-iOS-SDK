@@ -1,7 +1,7 @@
 import Foundation
 
 /// Protocol defining the requirements for fetching campaign configuration
-protocol ConfigFetcher: Sendable {
+public protocol ConfigFetcher: Sendable {
   /// The required schema version that this fetcher can handle
   var requiredSchemaVersion: String { get }
   
@@ -12,7 +12,7 @@ protocol ConfigFetcher: Sendable {
 }
 
 /// Errors that can occur during campaign configuration fetching
-enum ConfigError: Error {
+public enum ConfigError: Error {
   /// The server returned an invalid response
   case invalidResponse
   /// Failed to decode the JSON response
