@@ -1,6 +1,16 @@
 import SwiftUI
 import UIKit
 
+/// Functions to extract the dominant color from an image,
+/// and to determine an appropriate text color based on the dominant color.
+/// 
+/// The dominant color is determined by sampling the top portion of the image
+/// (by default, the top 10%), and then finding the most common color in that
+/// sample.
+/// 
+/// The appropriate text color is determined by calculating the luminance of
+/// the dominant color, and then choosing either white or black based on the
+/// luminance value.
 struct DominantColorExtractor {
     /// Extracts the dominant color from the top portion of an image
     /// - Parameters:

@@ -2,6 +2,7 @@ import Testing
 import Foundation
 @testable import promotable_ios_sdk
 
+/// Tests for campaign models and storage behavior
 @Suite
 struct CampaignsTests {
   let jsonSample: String
@@ -12,6 +13,7 @@ struct CampaignsTests {
     self.jsonSample = String(data: data, encoding: .utf8)!
   }
   
+  /// Tests that the campaign JSON can be properly decoded into model objects
   @Test
   func testDecodingCampaignsJSON() {
     let decoder = JSONDecoder()
@@ -34,6 +36,7 @@ struct CampaignsTests {
     #expect(campaignB?.promotions.last?.weight == 1)
   }
   
+  /// Tests that the campaign storage correctly increments counts and resets
   @Test("CampaignStorage - increment and reset")
   func testCampaignStorage() {
     let storage = CampaignStorageInMemory()

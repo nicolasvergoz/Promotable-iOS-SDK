@@ -1,10 +1,12 @@
 import SwiftUI
 
+/// Defines how a promotion will be presented to the user
 enum PromotionPresentationMode {
   case sheet
   case fullScreen
 }
 
+/// View modifier that manages displaying promotions from a campaign manager
 struct PromotionPresenterModifier<PromotionView: View>: ViewModifier {
   @Binding var isPresented: Bool
   let campaignManager: CampaignManager
@@ -51,6 +53,14 @@ struct PromotionPresenterModifier<PromotionView: View>: ViewModifier {
 }
 
 extension View {
+  /// Attaches a promotion presenter to a view
+  /// - Parameters:
+  ///   - isPresented: Binding that controls when the promotion is shown
+  ///   - campaignManager: Manager that provides promotions to display
+  ///   - presentationMode: How the promotion should be presented (sheet or fullscreen)
+  ///   - interactiveDismissDisabled: Whether user can dismiss with a gesture
+  ///   - content: View builder for creating the promotion view
+  /// - Returns: A view with the promotion presenter attached
   func promotionPresenter<PromotionView: View>(
     isPresented: Binding<Bool>,
     campaignManager: CampaignManager,

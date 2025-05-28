@@ -30,7 +30,6 @@ extension Campaign {
     public let content: [Campaign.Content]
     public var weight: Int?
     public var minDisplayDuration: Int?
-    // TODO: Action button color: providedColor/extractedCoverColor/extractedIconColor/default
   }
   
   public struct Image: Codable, Sendable, Hashable {

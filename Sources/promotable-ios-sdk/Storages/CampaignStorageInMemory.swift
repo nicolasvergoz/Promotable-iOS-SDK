@@ -1,5 +1,7 @@
 import Foundation
 
+/// A simple in-memory implementation of campaign storage
+/// Stores campaign and promotion display counts in memory dictionaries
 final class CampaignStorageInMemory: CampaignStorageProtocol {
   var campaignCount: [String : Int] = [:]
   var promotionCount: [String : Int] = [:]

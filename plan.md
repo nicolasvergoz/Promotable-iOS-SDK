@@ -111,5 +111,9 @@ Create Models to decode the JSON file into Swift structs
 - [ ] Remove any personal identity names from files
 - [ ] Review code, file by file. Add comments "// FEEDBACK: " for suggestions
 
+## Update DominantColorExtractor
+- Remove the topPercentage parameter and "top" notion
+- Always use 100% of the image to get the dominant color
+
 ## Prepare for public github repository
 - Add a README file to explain the code
