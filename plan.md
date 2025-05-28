@@ -23,6 +23,8 @@ This Swift module provides a lightweight and extensible system for managing and 
 - [x] Json config fetcher as protocol
 - [x] Create JSON Schema
 - [x] Add versioning to json schema
+- [x] Separate stats and balancing
+- [ ] Test promotion eligibility
 - [ ] Config file versionning
 - [ ] Clean up
 - [ ] Prepare for public github repository
@@ -82,10 +84,20 @@ Create Models to decode the JSON file into Swift structs
 - Add a schema version to json file
 - ConfigFetcher implementations validate schema version before decoding the full model
 
+## Separate stats and balancing
+- Separate cumulative display stats and current display weight balancing. But use the same protocol and struct
+- Save cumulative display stats in a different user default storage
+- Increment both counters when a promotion is displayed
+- When the config file has changed, reset only the current display counters
+
+## Test promotion eligibility
+- Test if a campaign is eligible to be displayed based target parameter
+
 ## Config versionning
 - Chat: Choose a technical solution to determine when to reset the current display counters
 - When the config file has changed, the manager should act accordingly
-- Keep a record of all the cumulative view count by promotion and campaign ids but reset the current display weight balancing mechanism
+- Keep the record of all the cumulative view count but reset the current display weight balancing stats
+- Test config change, and check for stats are reset and cumulative are persisted
 
 ## Clean up
 - Make the module classes/structs/methods/init/properties public when it's needed outside the module

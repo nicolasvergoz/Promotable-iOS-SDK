@@ -42,7 +42,7 @@ struct CampaignsTests {
   
   @Test("CampaignStorage - increment and reset")
   func testCampaignStorage() {
-    let storage = InMemoryCampaignStorage()
+    let storage = CampaignStorageInMemory()
     
     storage.incrementDisplayCount(campaignId: "A", promotionId: "A1")
     storage.incrementDisplayCount(campaignId: "A", promotionId: "A1")
@@ -64,7 +64,8 @@ struct CampaignsTests {
   func testCampaignSelection() async throws {
     // Create a fresh storage instance for this test
     let manager = CampaignManager(
-      storage: InMemoryCampaignStorage()
+      balancingStorage: CampaignStorageInMemory(),
+      cumulativeStorage: CampaignStorageInMemory()
     )
     
     // Create the mock fetcher that loads from the test bundle
@@ -119,13 +120,12 @@ struct CampaignsTests {
     print("Display Stats", stats)
   }
   
-  // TODO: Test: ignore non-eligible promotions (expired date, unmatched platform/locale)
-  
   @Test("ConfigFetcher - mock implementation")
   func testConfigFetcher() async throws {
     // Create a campaign manager with a fresh storage instance
     let manager = CampaignManager(
-      storage: InMemoryCampaignStorage()
+      balancingStorage: CampaignStorageInMemory(),
+      cumulativeStorage: CampaignStorageInMemory()
     )
     
     // Create the mock fetcher that loads from the test bundle

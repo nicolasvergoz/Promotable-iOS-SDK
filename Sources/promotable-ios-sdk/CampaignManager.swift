@@ -1,20 +1,34 @@
 import Foundation
+
 /// Manages campaign configurations, selection, and statistics
 public actor CampaignManager: Sendable {
   var campaigns: [Campaign] = []
-  private let storage: CampaignStorageProtocol
+  
+  /// Storage for balancing campaign and promotion display counts
+  /// These counts reset when configuration changes
+  private let balancingStorage: CampaignStorageProtocol
+  
+  /// Storage for cumulative display statistics
+  /// These stats persist across configuration changes
+  private let cumulativeStorage: CampaignStorageProtocol
+  
   var platform: String
   var locale: String
   
   /// Initialize the campaign manager with a targeting context
   /// - Parameters:
-  ///   - storage: Storage implementation for campaign display counts
+  ///   - balancingStorage: Storage implementation for balancing campaign display counts (resets on config change)
+  ///   - statsStorage: Storage implementation for cumulative display statistics (persists across config changes)
+  ///   - locale: Current locale for targeting, defaults to "en"
+  ///   - platform: Current platform for targeting, defaults to "ios"
   init(
-    storage: CampaignStorageProtocol = CampaignStorage(),
+    balancingStorage: CampaignStorageProtocol = BalancingCampaignStorage(),
+    cumulativeStorage: CampaignStorageProtocol = CampaignStorageCumulative(),
     locale: String = "en",
     platform: String = "ios"
   ) {
-    self.storage = storage
+    self.balancingStorage = balancingStorage
+    self.cumulativeStorage = cumulativeStorage
     self.locale = locale
     self.platform = platform
   }
@@ -47,9 +61,12 @@ public actor CampaignManager: Sendable {
   /// - Parameter response: The campaign response containing campaigns
   func configure(with response: CampaignsResponse) {
     self.campaigns = response.campaigns
-    storage.reset()
+    // Only reset balancing storage when config changes, preserve cumulative stats
+    balancingStorage.reset()
   }
   
+  /// Get the next promotion to display based on eligibility and weighted balancing
+  /// - Returns: A promotion to display, or nil if none available
   func nextPromotion() async -> Campaign.Promotion? {
     // Filter campaigns matching current device context
     let eligibleCampaigns = campaigns.filter {
@@ -70,15 +87,28 @@ public actor CampaignManager: Sendable {
       return nil
     }
     
-    storage.incrementDisplayCount(campaignId: selectedCampaign.id, promotionId: selectedPromotion.id)
+    // Increment both storage systems when a promotion is displayed
+    balancingStorage.incrementDisplayCount(campaignId: selectedCampaign.id, promotionId: selectedPromotion.id)
+    cumulativeStorage.incrementDisplayCount(campaignId: selectedCampaign.id, promotionId: selectedPromotion.id)
     
     return selectedPromotion
   }
   
+  /// Get cumulative display statistics across all configurations
+  /// - Returns: DisplayStats containing campaign and promotion view counts
   func getStats() -> DisplayStats {
     DisplayStats(
-      campaigns: storage.campaignDisplayCounts,
-      promotions: storage.promotionDisplayCounts
+      campaigns: cumulativeStorage.campaignCount,
+      promotions: cumulativeStorage.promotionCount
+    )
+  }
+  
+  /// Get current balancing display counts (resets when configuration changes)
+  /// - Returns: DisplayStats containing campaign and promotion current balancing counts
+  func getBalancingStats() -> DisplayStats {
+    DisplayStats(
+      campaigns: balancingStorage.campaignCount,
+      promotions: balancingStorage.promotionCount
     )
   }
   
@@ -90,17 +120,27 @@ public actor CampaignManager: Sendable {
     self.platform = platform
   }
   
+  /// Select a campaign using weighted balancing
+  /// - Parameters:
+  ///   - entries: List of campaigns to select from
+  ///   - weight: Function to get the weight of a campaign
+  /// - Returns: Selected campaign or nil if none available
   private func pickCampaign(_ entries: [Campaign], weight: (Campaign) -> Int) -> Campaign? {
     let weighted: [Balancer.Entry] = entries.map {
-      let displayCounts = storage.getCampaignDisplayCount(for: $0.id)
+      let displayCounts = balancingStorage.getCampaignDisplayCount(for: $0.id)
       return Balancer.Entry(item: $0, weight: weight($0), displayCounts: displayCounts)
     }
     return Balancer(weighted).pick()
   }
   
+  /// Select a promotion using weighted balancing
+  /// - Parameters:
+  ///   - entries: List of promotions to select from
+  ///   - weight: Function to get the weight of a promotion
+  /// - Returns: Selected promotion or nil if none available
   private func pickPromotion(_ entries: [Campaign.Promotion], weight: (Campaign.Promotion) -> Int) -> Campaign.Promotion? {
     let weighted: [Balancer.Entry] = entries.map {
-      let displayCounts = storage.getPromotionDisplayCount(for: $0.id)
+      let displayCounts = balancingStorage.getPromotionDisplayCount(for: $0.id)
       return Balancer.Entry(item: $0, weight: weight($0), displayCounts: displayCounts)
     }
     return Balancer(weighted).pick()
