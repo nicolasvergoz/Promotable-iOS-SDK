@@ -25,7 +25,7 @@ This Swift module provides a lightweight and extensible system for managing and 
 - [x] Add versioning to json schema
 - [x] Separate stats and balancing
 - [x] Test promotion target eligibility
-- [ ] Config file versionning
+- [x] Config versioning
 - [ ] Clean up
 - [ ] Prepare for public github repository
 
@@ -93,20 +93,24 @@ Create Models to decode the JSON file into Swift structs
 ## Test promotion target eligibility
 - Test if a campaign is eligible to be displayed based target parameter
 
-## Config versionning
-- Chat: Choose a technical solution to determine when to reset the current display counters
-- When the config file has changed, the manager should act accordingly
-- Keep the record of all the cumulative view count but reset the current display weight balancing stats
-- Test config change, and check for stats are reset and cumulative are persisted
+## Config versioning
+- [x] Chat: Choose a technical solution to determine when to reset the current display counters -> Chosen: Hashable models and hash comparison.
+- [x] Implement campaign configuration change detection using Hashable models
+  - [x] Make `Campaign` and nested models conform to `Hashable` in `Models/Campaign.swift`
+  - [x] Implement logic in `CampaignManager.swift` to store and compare hashes of the `[Campaign]` array.
+- [x] When the config file has changed, the manager should act accordingly (reset balancing stats). -> Implemented in `CampaignManager.configure(with:)`.
+- [x] Keep the record of all the cumulative view count but reset the current display weight balancing stats. -> This was already part of `CampaignManager` logic, now triggered by hash change.
+- [x] Test config change, and check for stats are reset and cumulative are persisted.
 
 ## Clean up
-- Make the module classes/structs/methods/init/properties public when it's needed outside the module
+- Make the module's classes/structs/methods/init/properties public when it's needed outside the module
 - Rearrange files and folders
-- Review code, file by file
-- Suggest few code refactors when necessary
+- Suggest better namings for files, folders, classes, methods, properties, etc.
 - Add comments in code when it's tricky
-- Add document comments on methods and classes. With a description and example when it's needed
+- Remove comments when the code is clear
+- Add documentation comments on methods and classes. With a description and example when it's needed
 - Remove any personal identity names from files
+- Review code, file by file. Add comments "// FEEDBACK: " for suggestions
 
 ## Prepare for public github repository
 - Add a README file to explain the code

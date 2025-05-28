@@ -2,7 +2,11 @@ import Foundation
 
 /// Manages campaign configurations, selection, and statistics
 public actor CampaignManager: Sendable {
+  /// The current loaded campaigns
   var campaigns: [Campaign] = []
+
+  /// Stores the hash of the current campaigns configuration
+  private var configHash: Int? = nil
   
   /// Storage for balancing campaign and promotion display counts
   /// These counts reset when configuration changes
@@ -59,10 +63,40 @@ public actor CampaignManager: Sendable {
   
   /// Configures the campaign manager with the provided campaign response
   /// - Parameter response: The campaign response containing campaigns
-  func configure(with response: CampaignsResponse) {
-    self.campaigns = response.campaigns
-    // Only reset balancing storage when config changes, preserve cumulative stats
-    balancingStorage.reset()
+  /// - Returns: Bool indicating if the configuration actually changed
+  @discardableResult
+  func configure(with response: CampaignsResponse) -> Bool {
+    let newHash = hashCampaigns(response.campaigns)
+    let changed = (configHash == nil) || (configHash != newHash)
+    if changed {
+      // Only update campaigns and reset balancing storage if config changed
+      self.campaigns = response.campaigns
+      configHash = newHash
+      balancingStorage.reset()
+    }
+    return changed
+  }
+
+  /// Calculates the hash of a campaigns array for config versioning
+  /// - Parameter campaigns: The array of Campaign objects
+  /// - Returns: Int hash value
+  private func hashCampaigns(_ campaigns: [Campaign]) -> Int {
+    var hasher = Hasher()
+    campaigns.hash(into: &hasher)
+    return hasher.finalize()
+  }
+
+  /// Returns the current config hash, or nil if not loaded
+  public func currentConfigHash() -> Int? {
+    return configHash
+  }
+
+  /// Checks if a given campaigns array would change the current config
+  /// - Parameter newCampaigns: The new campaigns to check
+  /// - Returns: Bool indicating if the config would change
+  func wouldConfigChange(with newCampaigns: [Campaign]) -> Bool {
+    let newHash = hashCampaigns(newCampaigns)
+    return configHash == nil || configHash != newHash
   }
   
   /// Get the next promotion to display based on eligibility and weighted balancing
