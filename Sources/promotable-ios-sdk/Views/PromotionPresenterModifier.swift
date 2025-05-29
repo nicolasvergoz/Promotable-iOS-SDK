@@ -13,9 +13,9 @@ struct PromotionPresenterModifier<PromotionView: View>: ViewModifier {
   let presentationMode: PromotionPresentationMode
   let interactiveDismissDisabled: Bool
   let content: (Campaign.Promotion) -> PromotionView
-
+  
   @State private var promotion: Campaign.Promotion?
-
+  
   func body(content base: Content) -> some View {
     base
       .background {
@@ -27,7 +27,7 @@ struct PromotionPresenterModifier<PromotionView: View>: ViewModifier {
         }
       }
   }
-
+  
   @ViewBuilder
   private func PresentationModifier() -> some View {
     switch presentationMode {
@@ -39,7 +39,7 @@ struct PromotionPresenterModifier<PromotionView: View>: ViewModifier {
               .interactiveDismissDisabled(interactiveDismissDisabled)
           }
         }
-
+      
     case .fullScreen:
       Color.clear
         .fullScreenCover(isPresented: $isPresented) {

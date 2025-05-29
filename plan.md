@@ -106,14 +106,16 @@ Create Models to decode the JSON file into Swift structs
 - [x] Make the module's classes/structs/methods/init/properties public when it's needed outside the module
 - [x] Rearrange files and folders
 - [x] Suggest better namings for files, folders, classes, methods, properties, etc.
-- [ ] Add comments in code when it's tricky and remove comments when the code is clear
-- [ ] Add documentation comments on methods and classes. With a description and example when it's needed
-- [ ] Remove any personal identity names from files
-- [ ] Review code, file by file. Add comments "// FEEDBACK: " for suggestions
+- [x] Add comments in code when it's tricky and remove comments when the code is clear
+- [x] Add documentation comments on methods and classes. With a description and example when it's needed
+- [x] Remove any personal identity names from files
+- [x] Review code, file by file
+- [ ] Handle TODOS
 
 ## Update DominantColorExtractor
-- Remove the topPercentage parameter and "top" notion
-- Always use 100% of the image to get the dominant color
+- [ ] Remove the topPercentage parameter and "top" notion
+- [ ] Always use 100% of the image to get the dominant color
+- [ ] Remove top gradient in header/cover, keep color for action button
 
 ## Prepare for public github repository
 - Add a README file to explain the code
