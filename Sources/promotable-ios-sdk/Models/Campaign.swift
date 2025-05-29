@@ -47,6 +47,7 @@ extension Campaign {
   public struct Action: Codable, Sendable, Hashable {
     public let label: String
     public let url: URL
+    public var backgroundColor: String?
   }
   
   public struct Content: Codable, Sendable, Hashable {

@@ -7,8 +7,8 @@ public struct PromotionCoverView: View {
   public let maxWidth: CGFloat
   
   @Binding public var coverYPosition: CGFloat
-  @Binding public var dominantColor: Color?
-  @Binding public var dominantTextColor: Color
+  @Binding public var accentColor: Color?
+  @Binding public var accentContrastColor: Color
   
   /// Creates a new PromotionCoverView with the specified parameters
   /// - Parameters:
@@ -16,22 +16,22 @@ public struct PromotionCoverView: View {
   ///   - mediaHeight: Optional fixed height for the cover image
   ///   - maxWidth: Maximum width for the cover image
   ///   - coverYPosition: Binding for tracking the Y position of the cover
-  ///   - dominantColor: Binding for storing the extracted dominant color
-  ///   - dominantTextColor: Binding for storing the text color that contrasts with the dominant color
+  ///   - accentColor: Binding for storing the extracted accent color
+  ///   - accentContrastColor: Binding for storing the text color that contrasts with the accent color
   public init(
     coverUrl: URL?,
     mediaHeight: CGFloat?,
     maxWidth: CGFloat,
     coverYPosition: Binding<CGFloat>,
-    dominantColor: Binding<Color?>,
-    dominantTextColor: Binding<Color>
+    accentColor: Binding<Color?>,
+    accentContrastColor: Binding<Color>
   ) {
     self.coverUrl = coverUrl
     self.mediaHeight = mediaHeight
     self.maxWidth = maxWidth
     self._coverYPosition = coverYPosition
-    self._dominantColor = dominantColor
-    self._dominantTextColor = dominantTextColor
+    self._accentColor = accentColor
+    self._accentContrastColor = accentContrastColor
   }
   
   public var body: some View {
@@ -55,10 +55,10 @@ public struct PromotionCoverView: View {
   private func extractDominantColor(from url: URL) async {
     if let (data, _) = try? await URLSession.shared.data(from: url),
        let uiImage = UIImage(data: data) {
-      if let extractedColor = DominantColorExtractor.extractDominantColor(from: uiImage, topPercentage: 1.0) {
+      if let extractedColor = DominantColorExtractor.extractDominantColor(from: uiImage) {
         let color = Color(extractedColor)
-        dominantColor = color
-        dominantTextColor = DominantColorExtractor.contrastingTextColor(for: color)
+        accentColor = color
+        accentContrastColor = DominantColorExtractor.contrastingTextColor(for: color)
       }
     }
   }
@@ -66,16 +66,16 @@ public struct PromotionCoverView: View {
 
 #Preview {
   @Previewable @State var coverYPosition: CGFloat = 0
-  @Previewable @State var dominantColor: Color? = nil
-  @Previewable @State var dominantTextColor: Color = .white
+  @Previewable @State var accentColor: Color? = nil
+  @Previewable @State var accentContrastColor: Color = .white
   
   return PromotionCoverView(
     coverUrl: URL(string: "https://images.unsplash.com/photo-1747760866743-97dff7918000"),
     mediaHeight: 300,
     maxWidth: 400,
     coverYPosition: $coverYPosition,
-    dominantColor: $dominantColor,
-    dominantTextColor: $dominantTextColor
+    accentColor: $accentColor,
+    accentContrastColor: $accentContrastColor
   )
   .frame(height: 300)
 }

@@ -3,25 +3,25 @@ import SwiftUI
 /// Component responsible for displaying the action button
 public struct PromotionActionButton: View {
   public let actionLabel: String
-  public let dominantColor: Color?
-  public let dominantTextColor: Color
+  public let accentColor: Color?
+  public let accentContrastColor: Color
   public let onActionTap: () -> Void
   
   /// Creates a new PromotionActionButton with the specified parameters
   /// - Parameters:
   ///   - actionLabel: The text to display on the button
-  ///   - dominantColor: The background color of the button (uses primary color if nil)
-  ///   - dominantTextColor: The text color of the button
+  ///   - accentColor: The background color of the button (uses primary color if nil)
+  ///   - accentContrastColor: The text color of the button
   ///   - onActionTap: Callback when the button is tapped
   public init(
     actionLabel: String,
-    dominantColor: Color?,
-    dominantTextColor: Color,
+    accentColor: Color?,
+    accentContrastColor: Color,
     onActionTap: @escaping () -> Void
   ) {
     self.actionLabel = actionLabel
-    self.dominantColor = dominantColor
-    self.dominantTextColor = dominantTextColor
+    self.accentColor = accentColor
+    self.accentContrastColor = accentContrastColor
     self.onActionTap = onActionTap
   }
   
@@ -37,8 +37,8 @@ public struct PromotionActionButton: View {
             .padding(.vertical, 12)
             .padding(.horizontal, 24)
             .frame(maxWidth: .infinity)
-            .background(dominantColor ?? Color.primary)
-            .foregroundColor(dominantTextColor)
+            .background(accentColor ?? Color.primary)
+            .foregroundColor(accentContrastColor)
             .cornerRadius(24)
         }
       )
@@ -53,8 +53,8 @@ public struct PromotionActionButton: View {
     
     PromotionActionButton(
       actionLabel: "Get Started",
-      dominantColor: .blue,
-      dominantTextColor: .white,
+      accentColor: .blue,
+      accentContrastColor: .white,
       onActionTap: {}
     )
   }

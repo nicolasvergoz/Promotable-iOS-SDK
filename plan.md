@@ -106,11 +106,17 @@ Views and components can be used by the developer to present a promotion in thei
 - [x] Make PromotionContentView public
 
 ## Update DominantColorExtractor
-- [ ] Add action button color in promotion schema/json/models
-- [ ] Change Strategy to use action button color if provided, else use cover dominant color, else use icon dominant color, else use system background color
-- [ ] Remove the topPercentage parameter and "top" notion
-- [ ] Always use 100% of the image to get the dominant color
-- [ ] Remove top gradient in header/cover, keep color for action button
+- [x] Add action background color in promotion: schema/json/models
+- [x] Change strategy: 
+  - if provided: use action button background color 
+  - else if: cover provided: use cover dominant color
+  - else if: icon provided: use icon dominant color
+  - else: use system background color
+- [x] Remove the topPercentage parameter and "top" notion in dominant color extractor
+- [x] Always use 100% of the image to get the dominant color
+- [x] Determine the most suitable text color based on the previously determined accent color in DefaultPromotionView
 
 ## Prepare for public github repository
-- Add a README file to explain the code
+- [ ] Version the module 0.1.0
+- [ ] Add a README file to explain the code
+- [ ] Explain that json schema will be move to a separated repository

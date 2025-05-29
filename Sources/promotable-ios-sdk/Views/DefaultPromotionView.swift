@@ -25,8 +25,11 @@ public struct DefaultPromotionView: View {
   @State private var topSafeAreaInset: CGFloat = .zero
   @State private var coverYPosition: CGFloat = .zero
   @State private var coverMaxWidth: CGFloat = .zero
-  @State private var dominantColor: Color? = nil
-  @State private var dominantTextColor: Color = .white
+  @State private var accentColor: Color? = nil
+  @State private var accentContrastColor: Color = .white
+  
+  @State private var coverImage: UIImage? = nil
+  @State private var iconImage: UIImage? = nil
   
   public var body: some View {
     ZStack(alignment: .top) {
@@ -34,8 +37,8 @@ public struct DefaultPromotionView: View {
       contentScrollView()
       PromotionActionButton(
         actionLabel: promotion.action.label,
-        dominantColor: dominantColor,
-        dominantTextColor: dominantTextColor,
+        accentColor: determineAccentColor(),
+        accentContrastColor: accentContrastColor,
         onActionTap: {
           onAction(promotion.action.url)
           onDismiss()
@@ -59,9 +62,56 @@ public struct DefaultPromotionView: View {
       mediaHeight: promotion.cover?.mediaHeight,
       maxWidth: coverMaxWidth,
       coverYPosition: $coverYPosition,
-      dominantColor: $dominantColor,
-      dominantTextColor: $dominantTextColor
+      accentColor: $accentColor,
+      accentContrastColor: $accentContrastColor
     )
+    .task {
+      // Load cover image for color extraction if available
+      if let coverUrl = promotion.cover?.mediaUrl {
+        await loadImage(from: coverUrl, into: $coverImage)
+      }
+    }
+  }
+  
+  /// Loads an image from a URL and assigns it to a binding
+  private func loadImage(from url: URL, into binding: Binding<UIImage?>) async {
+    if let (data, _) = try? await URLSession.shared.data(from: url),
+       let uiImage = UIImage(data: data) {
+      binding.wrappedValue = uiImage
+    }
+  }
+  
+  /// Determines the accent color using a cascading strategy and updates the contrast color accordingly:
+  /// - First, use the explicitly provided background color if available
+  /// - Otherwise, extract the dominant color from the cover image if available
+  /// - Otherwise, extract the dominant color from the icon if available
+  /// - Finally, fall back to the system background color
+  private func determineAccentColor() -> Color {
+    // Strategy 1: Use explicitly provided background color if available
+    if let hexColor = promotion.action.backgroundColor, !hexColor.isEmpty {
+      let color = Color(hex: hexColor) ?? Color(UIColor.systemBackground)
+      accentContrastColor = DominantColorExtractor.contrastingTextColor(for: color)
+      return color
+    }
+    
+    // Strategy 2: Extract dominant color from cover image if available
+    if let coverImg = coverImage, let dominantColor = DominantColorExtractor.extractDominantColor(from: coverImg) {
+      let color = Color(dominantColor)
+      accentContrastColor = DominantColorExtractor.contrastingTextColor(for: color)
+      return color
+    }
+    
+    // Strategy 3: Extract dominant color from icon image if available
+    if let iconImg = iconImage, let dominantColor = DominantColorExtractor.extractDominantColor(from: iconImg) {
+      let color = Color(dominantColor)
+      accentContrastColor = DominantColorExtractor.contrastingTextColor(for: color)
+      return color
+    }
+    
+    // Strategy 4: Fall back to system background color
+    let color = Color.primary
+    accentContrastColor = DominantColorExtractor.contrastingTextColor(for: color)
+    return color
   }
   
   @ViewBuilder
@@ -74,6 +124,12 @@ public struct DefaultPromotionView: View {
           subtitle: promotion.subtitle,
           iconUrl: promotion.icon?.imageUrl
         )
+        .task {
+          // Load icon image for color extraction if available
+          if let iconUrl = promotion.icon?.imageUrl {
+            await loadImage(from: iconUrl, into: $iconImage)
+          }
+        }
         
         PromotionContentView(contentItems: promotion.content)
           .padding(.horizontal)
@@ -93,7 +149,25 @@ public struct DefaultPromotionView: View {
 }
 
 #Preview {
-  let promotion = Campaign.Promotion.sample
+  // Create a sample promotion with a custom action background color
+  var promotion = Campaign.Promotion.sample
+  // Set a custom background color for the action button in the sample
+  promotion = Campaign.Promotion(
+    id: promotion.id,
+    title: promotion.title,
+    subtitle: promotion.subtitle,
+    icon: promotion.icon,
+    cover: promotion.cover,
+    action: Campaign.Action(
+      label: promotion.action.label,
+      url: promotion.action.url,
+      backgroundColor: "#FF5733" // Bright orange color
+    ),
+    content: promotion.content,
+    weight: promotion.weight,
+    minDisplayDuration: promotion.minDisplayDuration
+  )
+  
   return DefaultPromotionView(
     promotion: promotion,
     onDismiss: { },
