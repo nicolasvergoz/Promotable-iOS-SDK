@@ -151,6 +151,20 @@ Promotable uses a structured JSON format to configure campaigns and promotions. 
 }
 ```
 
+### JSON Schema Location
+
+The JSON schema used for campaign configuration validation is located in the repository at:
+
+```
+Sources/promotable-ios-sdk/campaigns.schema.json
+```
+
+This file defines the structure and validation rules for campaign configuration JSON payloads used by the SDK.
+
+You can use this schema to validate your own JSON configuration files before integrating them with the SDK. This helps ensure compatibility and catch errors early. The schema can be used with standard JSON schema validation tools or libraries in your preferred language.
+
+For a quick and easy validation, you can also use the online tool [jsonschemavalidator.net](https://www.jsonschemavalidator.net) to check your configuration against the schema.
+
 **Note:** The JSON schema will be moved to a separate repository in the future for better versioning and documentation.
 
 ## Components
