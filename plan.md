@@ -14,7 +14,7 @@ This Swift module provides a lightweight and extensible system for managing and 
 # Plan
 
 ## Setup Swift Module
-The module will be for iOS 16 minimum. 
+The module will be for iOS 17 minimum. 
 Should have a target test based on Swift Testing to run end-to-end and unit tests.
 
 ## JSON structure
@@ -34,7 +34,7 @@ Create Models to decode the JSON file into Swift structs
 ## Default presented Layout
 - The module can present a promotion with a built-in SwiftUI layout by default
 - It's displayed as a fullscreencover
-- Design can be find in this Figma as light or dark mode https://www.figma.com/design/66s6J6drkwzKN5YFB7BoJh/Promotable?node-id=79-73&t=jy4acHtrQUf9W6tJ-4
+- Design can be find in this Figma as light or dark mode (Figma URL)
 - Use the default SwiftUI color `primary` and `background` for the colors.
 - Images come from remote URLs
 - Almost everything is optional, so can be ignored in the layout if nil or empty. What is mandatory are, the action button and close button.
@@ -117,6 +117,8 @@ Views and components can be used by the developer to present a promotion in thei
 - [x] Determine the most suitable text color based on the previously determined accent color in DefaultPromotionView
 
 ## Prepare for public github repository
-- [ ] Version the module 0.1.0
-- [ ] Add a README file to explain the code
-- [ ] Explain that json schema will be move to a separated repository
+I will publish my module on MPL License (Mozilla)
+- [x] Add a LICENSE file
+- [x] Version the module 0.1.0
+- [x] Add a README file to explain the module
+- [x] Explain that json schema will be move to a separated repository in the future
