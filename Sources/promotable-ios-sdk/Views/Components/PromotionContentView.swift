@@ -1,10 +1,16 @@
 import SwiftUI
 
 /// Component responsible for displaying promotion content items
-struct PromotionContentView: View {
-  let contentItems: [Campaign.Content]
+public struct PromotionContentView: View {
+  public let contentItems: [Campaign.Content]
   
-  var body: some View {
+  /// Creates a new PromotionContentView with the specified content items
+  /// - Parameter contentItems: Array of content items to display
+  public init(contentItems: [Campaign.Content]) {
+    self.contentItems = contentItems
+  }
+  
+  public var body: some View {
     if !contentItems.isEmpty {
       VStack(alignment: .leading, spacing: 20) {
         ForEach(contentItems, id: \.description) { item in

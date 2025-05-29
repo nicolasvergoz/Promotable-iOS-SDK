@@ -1,13 +1,31 @@
 import SwiftUI
 
 /// Component responsible for displaying the action button
-struct PromotionActionButton: View {
-  let actionLabel: String
-  let dominantColor: Color?
-  let dominantTextColor: Color
-  let onActionTap: () -> Void
+public struct PromotionActionButton: View {
+  public let actionLabel: String
+  public let dominantColor: Color?
+  public let dominantTextColor: Color
+  public let onActionTap: () -> Void
   
-  var body: some View {
+  /// Creates a new PromotionActionButton with the specified parameters
+  /// - Parameters:
+  ///   - actionLabel: The text to display on the button
+  ///   - dominantColor: The background color of the button (uses primary color if nil)
+  ///   - dominantTextColor: The text color of the button
+  ///   - onActionTap: Callback when the button is tapped
+  public init(
+    actionLabel: String,
+    dominantColor: Color?,
+    dominantTextColor: Color,
+    onActionTap: @escaping () -> Void
+  ) {
+    self.actionLabel = actionLabel
+    self.dominantColor = dominantColor
+    self.dominantTextColor = dominantTextColor
+    self.onActionTap = onActionTap
+  }
+  
+  public var body: some View {
     VStack {
       Spacer()
       Button(

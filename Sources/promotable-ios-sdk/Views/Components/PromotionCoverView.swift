@@ -1,16 +1,40 @@
 import SwiftUI
 
 /// Component responsible for displaying the cover image and extracting its dominant color
-struct PromotionCoverView: View {
-  let coverUrl: URL?
-  let mediaHeight: CGFloat?
-  let maxWidth: CGFloat
+public struct PromotionCoverView: View {
+  public let coverUrl: URL?
+  public let mediaHeight: CGFloat?
+  public let maxWidth: CGFloat
   
-  @Binding var coverYPosition: CGFloat
-  @Binding var dominantColor: Color?
-  @Binding var dominantTextColor: Color
+  @Binding public var coverYPosition: CGFloat
+  @Binding public var dominantColor: Color?
+  @Binding public var dominantTextColor: Color
   
-  var body: some View {
+  /// Creates a new PromotionCoverView with the specified parameters
+  /// - Parameters:
+  ///   - coverUrl: URL of the cover image
+  ///   - mediaHeight: Optional fixed height for the cover image
+  ///   - maxWidth: Maximum width for the cover image
+  ///   - coverYPosition: Binding for tracking the Y position of the cover
+  ///   - dominantColor: Binding for storing the extracted dominant color
+  ///   - dominantTextColor: Binding for storing the text color that contrasts with the dominant color
+  public init(
+    coverUrl: URL?,
+    mediaHeight: CGFloat?,
+    maxWidth: CGFloat,
+    coverYPosition: Binding<CGFloat>,
+    dominantColor: Binding<Color?>,
+    dominantTextColor: Binding<Color>
+  ) {
+    self.coverUrl = coverUrl
+    self.mediaHeight = mediaHeight
+    self.maxWidth = maxWidth
+    self._coverYPosition = coverYPosition
+    self._dominantColor = dominantColor
+    self._dominantTextColor = dominantTextColor
+  }
+  
+  public var body: some View {
     if let coverUrl = coverUrl {
       ImageView(coverUrl, contentMode: mediaHeight == nil ? .fit : .fill)
         .frame(maxWidth: maxWidth)

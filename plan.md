@@ -12,22 +12,6 @@ This Swift module provides a lightweight and extensible system for managing and 
 - SwiftUI
 
 # Plan
-- [x] Setup Swift Module
-- [x] JSON structure
-- [x] Decodable Model
-- [x] Implement Codable Model
-- [x] Campaigns Manager
-- [x] Default presented Layout
-- [x] Dominant color top
-- [x] Presenter
-- [x] Json config fetcher as protocol
-- [x] Create JSON Schema
-- [x] Add versioning to json schema
-- [x] Separate stats and balancing
-- [x] Test promotion target eligibility
-- [x] Config versioning
-- [ ] Clean up code base
-- [ ] Prepare for public github repository
 
 ## Setup Swift Module
 The module will be for iOS 16 minimum. 
@@ -113,12 +97,13 @@ Create Models to decode the JSON file into Swift structs
 - [x] Handle TODOS
 
 ## Make views public
-- [ ] Make DefaultPromotionView public
-- [ ] Make PromotionActionButton public
-- [ ] Make PromotionCloseButton public
-- [ ] Make PromotionCoverView public
-- [ ] Make PromotionHeaderView public
-- [ ] Make PromotionContentView public
+Views and components can be used by the developer to present a promotion in their app.
+- [x] Make DefaultPromotionView public
+- [x] Make PromotionActionButton public
+- [x] Make PromotionCloseButton public
+- [x] Make PromotionCoverView public
+- [x] Make PromotionHeaderView public
+- [x] Make PromotionContentView public
 
 ## Update DominantColorExtractor
 - [ ] Add action button color in promotion schema/json/models

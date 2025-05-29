@@ -1,12 +1,27 @@
 import SwiftUI
 
 /// Component responsible for displaying the promotion header (icon, title, subtitle)
-struct PromotionHeaderView: View {
-  let title: String?
-  let subtitle: String?
-  let iconUrl: URL?
+public struct PromotionHeaderView: View {
+  public let title: String?
+  public let subtitle: String?
+  public let iconUrl: URL?
   
-  var body: some View {
+  /// Creates a new PromotionHeaderView with the specified parameters
+  /// - Parameters:
+  ///   - title: The title text to display
+  ///   - subtitle: The subtitle text to display
+  ///   - iconUrl: URL of the icon image
+  public init(
+    title: String?,
+    subtitle: String?,
+    iconUrl: URL?
+  ) {
+    self.title = title
+    self.subtitle = subtitle
+    self.iconUrl = iconUrl
+  }
+  
+  public var body: some View {
     VStack(spacing: 20) {
       // Icon
       if let iconUrl = iconUrl {

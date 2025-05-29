@@ -1,10 +1,16 @@
 import SwiftUI
 
 /// Component responsible for displaying the close button
-struct PromotionCloseButton: View {
-  let onDismiss: () -> Void
+public struct PromotionCloseButton: View {
+  public let onDismiss: () -> Void
   
-  var body: some View {
+  /// Creates a new PromotionCloseButton with the specified dismissal action
+  /// - Parameter onDismiss: Callback when the close button is tapped
+  public init(onDismiss: @escaping () -> Void) {
+    self.onDismiss = onDismiss
+  }
+  
+  public var body: some View {
     HStack {
       Spacer()
       Button(action: onDismiss) {
