@@ -9,23 +9,22 @@ struct PromotionCloseButton: View {
       Spacer()
       Button(action: onDismiss) {
         Image(systemName: "xmark")
-          .font(.system(size: 20, weight: .bold))
-          .foregroundColor(Color.primary)
+          .font(.system(size: 16, weight: .bold))
+          .foregroundColor(Color.secondary)
           .padding(8)
           .background(
             Circle()
               .fill(Color(uiColor: .systemBackground))
+              .opacity(0.8)
           )
-          .opacity(0.5)
       }
-      .padding(.top)
       .padding(.horizontal)
     }
   }
 }
 
 #Preview {
-  ZStack {
+  ZStack(alignment: .top) {
     Color.gray.opacity(0.3).edgesIgnoringSafeArea(.all)
     PromotionCloseButton(onDismiss: {})
   }

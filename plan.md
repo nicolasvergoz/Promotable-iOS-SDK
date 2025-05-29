@@ -110,9 +110,19 @@ Create Models to decode the JSON file into Swift structs
 - [x] Add documentation comments on methods and classes. With a description and example when it's needed
 - [x] Remove any personal identity names from files
 - [x] Review code, file by file
-- [ ] Handle TODOS
+- [x] Handle TODOS
+
+## Make views public
+- [ ] Make DefaultPromotionView public
+- [ ] Make PromotionActionButton public
+- [ ] Make PromotionCloseButton public
+- [ ] Make PromotionCoverView public
+- [ ] Make PromotionHeaderView public
+- [ ] Make PromotionContentView public
 
 ## Update DominantColorExtractor
+- [ ] Add action button color in promotion schema/json/models
+- [ ] Change Strategy to use action button color if provided, else use cover dominant color, else use icon dominant color, else use system background color
 - [ ] Remove the topPercentage parameter and "top" notion
 - [ ] Always use 100% of the image to get the dominant color
 - [ ] Remove top gradient in header/cover, keep color for action button

@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+
 /// Main view for displaying a promotion with standardized UI
 struct DefaultPromotionView: View {
   let promotion: Campaign.Promotion
@@ -16,7 +17,6 @@ struct DefaultPromotionView: View {
     ZStack(alignment: .top) {
       backgroundView()
       contentScrollView()
-      // TODO: rename properties
       PromotionActionButton(
         actionLabel: promotion.action.label,
         dominantColor: dominantColor,
@@ -33,23 +33,15 @@ struct DefaultPromotionView: View {
   
   @ViewBuilder
   private func backgroundView() -> some View {
-    VStack {
-      if let dominantColor = dominantColor {
-        dominantColor
-          .frame(height: coverYPosition)
-      }
-      Color(uiColor: .systemBackground)
-    }
-    .ignoresSafeArea()
+    Color(uiColor: .systemBackground)
+      .ignoresSafeArea()
   }
   
   @ViewBuilder
   private func coverImageView() -> some View {
-    // TODO: rename properties
     PromotionCoverView(
       coverUrl: promotion.cover?.mediaUrl,
       mediaHeight: promotion.cover?.mediaHeight,
-      topSafeAreaInset: topSafeAreaInset,
       maxWidth: coverMaxWidth,
       coverYPosition: $coverYPosition,
       dominantColor: $dominantColor,
@@ -62,7 +54,6 @@ struct DefaultPromotionView: View {
     ScrollView {
       VStack(spacing: 20) {
         coverImageView()
-        // TODO: rename properties
         PromotionHeaderView(
           title: promotion.title,
           subtitle: promotion.subtitle,
@@ -70,6 +61,7 @@ struct DefaultPromotionView: View {
         )
         
         PromotionContentView(contentItems: promotion.content)
+          .padding(.horizontal)
       }
       .onGeometryChange(for: CGFloat.self) { geometry in
         geometry.size.width
@@ -79,6 +71,7 @@ struct DefaultPromotionView: View {
       .padding(.top, promotion.cover?.mediaUrl == nil ? (topSafeAreaInset + 60) : 0)
       .padding(.bottom, 100)
     }
+    .scrollBounceBehavior(.basedOnSize)
     .ignoresSafeArea()
     .coordinateSpace(name: "scrollContentSpace")
   }

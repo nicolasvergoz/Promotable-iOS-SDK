@@ -4,7 +4,6 @@ import SwiftUI
 struct PromotionCoverView: View {
   let coverUrl: URL?
   let mediaHeight: CGFloat?
-  let topSafeAreaInset: CGFloat
   let maxWidth: CGFloat
   
   @Binding var coverYPosition: CGFloat
@@ -17,17 +16,6 @@ struct PromotionCoverView: View {
         .frame(maxWidth: maxWidth)
         .frame(height: mediaHeight)
         .clipped()
-        .overlay(alignment: .top) {
-          if let dominantColor = dominantColor {
-            LinearGradient(
-              gradient: Gradient(colors: [dominantColor, .clear]),
-              startPoint: .top,
-              endPoint: .bottom
-            )
-            .frame(height: 40)
-          }
-        }
-        .padding(.top, topSafeAreaInset)
         .onGeometryChange(for: CGFloat.self) { geometry in
           geometry.frame(in: .named("scrollContentSpace")).maxY
         } action: { newY in
@@ -53,14 +41,13 @@ struct PromotionCoverView: View {
 }
 
 #Preview {
-  @Previewable@State var coverYPosition: CGFloat = 0
-  @Previewable@State var dominantColor: Color? = nil
-  @Previewable@State var dominantTextColor: Color = .white
+  @Previewable @State var coverYPosition: CGFloat = 0
+  @Previewable @State var dominantColor: Color? = nil
+  @Previewable @State var dominantTextColor: Color = .white
   
   return PromotionCoverView(
     coverUrl: URL(string: "https://images.unsplash.com/photo-1747760866743-97dff7918000"),
     mediaHeight: 300,
-    topSafeAreaInset: 0,
     maxWidth: 400,
     coverYPosition: $coverYPosition,
     dominantColor: $dominantColor,
