@@ -1,120 +1,112 @@
 {
   "schemaVersion": "0.1.0",
-  "campaigns": [
+  "resetBalancingDate": "2025-06-01T00:00:00Z",
+  "resetCumulativeDate": "2025-05-01T00:00:00Z",
+  "promotions": [
     {
-      "id": "campaignA",
+      "id": "a1.acme",
+      "title": "Acme - Cartoon Company",
+      "subtitle": "In cartoon business since loooong time",
+      "icon": {
+        "imageUrl": "https://pub-e63b17b4d990438a83af58c15949f8a2.r2.dev/mark/acme.png",
+        "alt": "app icon",
+        "size": "medium"
+      },
+      "cover": {
+        "imageUrl": "https://pub-e63b17b4d990438a83af58c15949f8a2.r2.dev/type/acme.png",
+        "mediaType": "image",
+        "alt": "project banner"
+      },
+      "action": {
+        "label": "Action",
+        "url": "https://uilogos.co/"
+      },
+      "content": [
+        {
+          "image": {
+            "imageUrl": "https://loremicon.com/ngon/128/128/68768196284/jpg",
+            "alt": "loremicon"
+          },
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique suscipit lacinia."
+        },
+        {
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique suscipit lacinia."
+        },
+        {
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique suscipit lacinia."
+        }
+      ],
+      "weight": 1,
+      "minDisplayDuration": 3,
+      "target": {
+        "platforms": [
+          "ios"
+        ],
+        "language": "fr",
+        "displayAfterLaunch": 3,
+        "startDate": "2025-05-17T00:00:00Z",
+        "endDate": "2025-06-17T00:00:00Z"
+      }
+    },
+    {
+      "id": "b1.aven",
+      "title": "Aven - Flower logo app",
+      "subtitle": "Some unknown company",
+      "icon": {
+        "imageUrl": "https://pub-e63b17b4d990438a83af58c15949f8a2.r2.dev/mark/aven.png",
+        "alt": "app icon",
+        "size": "medium"
+      },
+      "cover": {
+        "imageUrl": "https://fastly.picsum.photos/id/760/1600/900.jpg?hmac=IZNMv1ZX6_765SDgrNf7jo8v6XDQNbJr9QRwUMlMWPI",
+        "mediaType": "image",
+        "alt": "project banner"
+      },
+      "action": {
+        "label": "Action",
+        "url": "https://loremicon.com/"
+      },
+      "content": [
+        {
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam facilisis neque libero, quis pretium massa imperdiet vel. Integer iaculis augue eu ex ornare, a malesuada felis varius. Donec ultricies tincidunt mattis. Nam pharetra turpis non laoreet facilisis. Quisque rhoncus nisl et molestie aliquet. Curabitur gravida lectus nulla, at ultricies leo euismod fringilla. Fusce eleifend justo ut lorem fermentum, id tempus mi tincidunt. Fusce lectus nulla, facilisis vitae dolor quis, rhoncus imperdiet purus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec efficitur viverra mi. Vestibulum egestas, erat et suscipit luctus, nunc sem viverra orci, sit amet commodo est lacus sit amet lacus. Sed dictum felis vitae enim placerat placerat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;"
+        }
+      ],
+      "weight": 1,
+      "minDisplayDuration": 1,
+      "target": {
+        "platforms": [
+          "ios",
+          "android"
+        ],
+        "language": "fr"
+      }
+    },
+    {
+      "id": "b2.update",
+      "title": "Update 0.66.6",
+      "subtitle": "New release available now",
+      "action": {
+        "label": "Action",
+        "url": "https://picsum.photos/"
+      },
+      "content": [
+        {
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique suscipit lacinia."
+        },
+        {
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique suscipit lacinia."
+        },
+        {
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique suscipit lacinia."
+        }
+      ],
       "weight": 1,
       "target": {
         "platforms": [
           "ios"
         ],
-        "languages": [
-          "en",
-          "fr"
-        ],
-        "displayAfterLaunch": 3,
-        "startDate": "2025-05-17T00:00:00Z",
-        "endDate": "2025-06-17T00:00:00Z"
-      },
-      "promotions": [
-        {
-          "id": "a1.acme",
-          "title": "Acme - Cartoon Company",
-          "subtitle": "In cartoon business since loooong time",
-          "icon": {
-            "imageUrl": "https://pub-e63b17b4d990438a83af58c15949f8a2.r2.dev/mark/acme.png",
-            "alt": "app icon",
-            "size": "medium"
-          },
-          "cover": {
-            "imageUrl": "https://pub-e63b17b4d990438a83af58c15949f8a2.r2.dev/type/acme.png",
-            "mediaType": "image",
-            "alt": "project banner"
-          },
-          "action": {
-            "label": "Action",
-            "url": "https://uilogos.co/"
-          },
-          "content": [
-            {
-              "image": {
-                "imageUrl": "https://loremicon.com/ngon/128/128/68768196284/jpg",
-                "alt": "loremicon"
-              },
-              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique suscipit lacinia."
-            },
-            {
-              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique suscipit lacinia."
-            },
-            {
-              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique suscipit lacinia."
-            }
-          ],
-          "weight": 1,
-          "minDisplayDuration": 3
-        }
-      ]
-    },
-    {
-      "id": "campaignB",
-      "weight": 2,
-      "target": {
-        "platforms": [
-          "ios"
-        ],
-        "languages": [
-          "en"
-        ]
-      },
-      "promotions": [
-        {
-          "id": "b1.aven",
-          "title": "Aven - Flower logo app",
-          "subtitle": "Some unknown company",
-          "icon": {
-            "imageUrl": "https://pub-e63b17b4d990438a83af58c15949f8a2.r2.dev/mark/aven.png",
-            "alt": "app icon",
-            "size": "medium"
-          },
-          "cover": {
-            "imageUrl": "https://fastly.picsum.photos/id/760/1600/900.jpg?hmac=IZNMv1ZX6_765SDgrNf7jo8v6XDQNbJr9QRwUMlMWPI",
-            "mediaType": "image",
-            "alt": "project banner"
-          },
-          "action": {
-            "label": "Action",
-            "url": "https://loremicon.com/"
-          },
-          "content": [
-            {
-              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam facilisis neque libero, quis pretium massa imperdiet vel. Integer iaculis augue eu ex ornare, a malesuada felis varius. Donec ultricies tincidunt mattis. Nam pharetra turpis non laoreet facilisis. Quisque rhoncus nisl et molestie aliquet. Curabitur gravida lectus nulla, at ultricies leo euismod fringilla. Fusce eleifend justo ut lorem fermentum, id tempus mi tincidunt. Fusce lectus nulla, facilisis vitae dolor quis, rhoncus imperdiet purus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec efficitur viverra mi. Vestibulum egestas, erat et suscipit luctus, nunc sem viverra orci, sit amet commodo est lacus sit amet lacus. Sed dictum felis vitae enim placerat placerat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;"
-            }
-          ],
-          "weight": 1,
-          "minDisplayDuration": 1
-        },
-        {
-          "id": "b2.update",
-          "title": "Update 0.66.6",
-          "subtitle": "New release available now",
-          "action": {
-            "label": "Action",
-            "url": "https://picsum.photos/"
-          },
-          "content": [
-            {
-              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique suscipit lacinia."
-            },
-            {
-              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique suscipit lacinia."
-            },
-            {
-              "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique suscipit lacinia."
-            }
-          ],
-          "weight": 1
-        }
-      ]
+        "language": "en"
+      }
     }
   ]
 }

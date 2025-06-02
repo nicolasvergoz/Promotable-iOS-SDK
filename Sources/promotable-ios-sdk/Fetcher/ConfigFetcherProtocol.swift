@@ -1,17 +1,17 @@
 import Foundation
 
-/// Protocol defining the requirements for fetching campaign configuration
+/// Protocol defining the requirements for fetching promotion configuration
 public protocol ConfigFetcher: Sendable {
   /// The required schema version that this fetcher can handle
   var requiredSchemaVersion: String { get }
   
-  /// Fetches the campaign configuration from a remote source
-  /// - Returns: A decoded CampaignsResponse object
+  /// Fetches the promotions configuration from a remote source
+  /// - Returns: A decoded PromotionsResponse object
   /// - Throws: ConfigError.schemaVersionMismatch if the schema version doesn't match the required version
-  func fetchConfig() async throws -> CampaignsResponse
+  func fetchConfig() async throws -> PromotionsResponse
 }
 
-/// Errors that can occur during campaign configuration fetching
+/// Errors that can occur during promotion configuration fetching
 public enum ConfigError: Error {
   /// The server returned an invalid response
   case invalidResponse

@@ -3,7 +3,7 @@ import UIKit
 
 /// Main view for displaying a promotion with standardized UI
 public struct DefaultPromotionView: View {
-  public let promotion: Campaign.Promotion
+  public let promotion: Promotion
   public var onDismiss: () -> Void = {}
   public var onAction: (URL) -> Void = { _ in }
   
@@ -13,7 +13,7 @@ public struct DefaultPromotionView: View {
   ///   - onDismiss: Callback when the view is dismissed
   ///   - onAction: Callback when the action button is tapped, with the action URL
   public init(
-    promotion: Campaign.Promotion,
+    promotion: Promotion,
     onDismiss: @escaping () -> Void = {},
     onAction: @escaping (URL) -> Void = { _ in }
   ) {
@@ -150,15 +150,15 @@ public struct DefaultPromotionView: View {
 
 #Preview {
   // Create a sample promotion with a custom action background color
-  var promotion = Campaign.Promotion.sample
+  var promotion = Promotion.sample
   // Set a custom background color for the action button in the sample
-  promotion = Campaign.Promotion(
+  promotion = Promotion(
     id: promotion.id,
     title: promotion.title,
     subtitle: promotion.subtitle,
     icon: promotion.icon,
     cover: promotion.cover,
-    action: Campaign.Action(
+    action: Promotion.Action(
       label: promotion.action.label,
       url: promotion.action.url,
       backgroundColor: "#FF5733" // Bright orange color

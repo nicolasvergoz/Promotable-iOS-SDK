@@ -1,12 +1,15 @@
 import Foundation
 
-/// Manages campaign configurations, selection, and statistics
+/// Manages promotion configurations, selection, and statistics
 public actor CampaignManager: Sendable {
-  /// The current loaded campaigns
-  var campaigns: [Campaign] = []
+  /// The current loaded promotions
+  var promotions: [Promotion] = []
 
-  /// Stores the hash of the current campaigns configuration
-  private var configHash: Int? = nil
+  /// Stores the last time balancing storage was reset
+  private var lastBalancingReset: Date = Date.distantPast
+  
+  /// Stores the last time cumulative storage was reset
+  private var lastCumulativeReset: Date = Date.distantPast
   
   /// Storage for balancing campaign and promotion display counts
   /// These counts reset when configuration changes
@@ -37,7 +40,7 @@ public actor CampaignManager: Sendable {
     self.platform = platform
   }
   
-  /// Updates the campaign configuration using the provided fetcher
+  /// Updates the promotion configuration using the provided fetcher
   /// - Parameter fetcher: An implementation of ConfigFetcher
   /// - Throws: Error from the fetcher if configuration cannot be fetched or decoded
   public func updateConfig(using fetcher: ConfigFetcher) async throws {
@@ -45,87 +48,85 @@ public actor CampaignManager: Sendable {
     self.configure(with: response)
   }
   
-  /// Configures the campaign manager with the provided campaign response
-  /// - Parameter response: The campaign response containing campaigns
-  /// - Returns: Bool indicating if the configuration actually changed
+  /// Configures the manager with the provided promotions response
+  /// - Parameter response: The promotions response containing promotions
+  /// - Returns: Bool indicating if any storage was reset
   @discardableResult
-  public func configure(with response: CampaignsResponse) -> Bool {
-    let newHash = hashCampaigns(response.campaigns)
-    let changed = (configHash == nil) || (configHash != newHash)
-    if changed {
-      // Only update campaigns and reset balancing storage if config changed
-      self.campaigns = response.campaigns
-      configHash = newHash
+  public func configure(with response: PromotionsResponse) -> Bool {
+    let currentDate = Date()
+    var wasReset = false
+    
+    // Check if balancing storage should be reset based on resetBalancingDate
+    if let resetBalancingDate = response.resetBalancingDate, resetBalancingDate > lastBalancingReset {
       balancingStorage.reset()
+      lastBalancingReset = currentDate
+      wasReset = true
     }
-    return changed
+    
+    // Check if cumulative storage should be reset based on resetCumulativeDate
+    if let resetCumulativeDate = response.resetCumulativeDate, resetCumulativeDate > lastCumulativeReset {
+      cumulativeStorage.reset()
+      lastCumulativeReset = currentDate
+      wasReset = true
+    }
+    
+    // Always update the promotions
+    self.promotions = response.promotions
+    
+    return wasReset
+  }
+  
+  /// Returns whether balancing storage was reset on the last configure call
+  /// - Returns: Date when balancing storage was last reset
+  public func lastBalancingResetDate() -> Date {
+    return lastBalancingReset
+  }
+  
+  /// Returns whether cumulative storage was reset on the last configure call
+  /// - Returns: Date when cumulative storage was last reset
+  public func lastCumulativeResetDate() -> Date {
+    return lastCumulativeReset
   }
 
-  /// Calculates the hash of a campaigns array for config versioning
-  /// - Parameter campaigns: The array of Campaign objects
-  /// - Returns: Int hash value
-  private func hashCampaigns(_ campaigns: [Campaign]) -> Int {
-    var hasher = Hasher()
-    campaigns.hash(into: &hasher)
-    return hasher.finalize()
-  }
-
-  /// Returns the current config hash, or nil if not loaded
-  public func currentConfigHash() -> Int? {
-    return configHash
-  }
-
-  /// Checks if a given campaigns array would change the current config
-  /// - Parameter newCampaigns: The new campaigns to check
-  /// - Returns: Bool indicating if the config would change
-  public func wouldConfigChange(with newCampaigns: [Campaign]) -> Bool {
-    let newHash = hashCampaigns(newCampaigns)
-    return configHash == nil || configHash != newHash
-  }
+  // Legacy wouldConfigChange methods removed
+  
+  /// Checks if a given promotions array would change the current config
+  // Legacy wouldConfigChange method removed
   
   /// Get the next promotion to display based on eligibility and weighted balancing
   /// - Returns: A promotion to display, or nil if none available
-  public func nextPromotion() async -> Campaign.Promotion? {
-    // Filter campaigns matching current device context
-    let eligibleCampaigns = campaigns.filter {
+  public func nextPromotion() async -> Promotion? {
+    // Filter promotions matching current device context
+    let eligiblePromotions = promotions.filter {
       $0.target?.matches(language: language, platform: platform) ?? true
     }
     
-    guard let selectedCampaign = pickCampaign(
-      eligibleCampaigns,
-      weight: \.weight
-    ) else {
-      return nil
-    }
-    
     guard let selectedPromotion = pickPromotion(
-      selectedCampaign.promotions,
+      eligiblePromotions,
       weight: { $0.weight ?? 1 }
     ) else {
       return nil
     }
     
     // Increment both storage systems when a promotion is displayed
-    balancingStorage.incrementDisplayCount(campaignId: selectedCampaign.id, promotionId: selectedPromotion.id)
-    cumulativeStorage.incrementDisplayCount(campaignId: selectedCampaign.id, promotionId: selectedPromotion.id)
+    balancingStorage.incrementDisplayCount(promotionId: selectedPromotion.id)
+    cumulativeStorage.incrementDisplayCount(promotionId: selectedPromotion.id)
     
     return selectedPromotion
   }
   
   /// Get cumulative display statistics across all configurations
-  /// - Returns: DisplayStats containing campaign and promotion view counts
+  /// - Returns: DisplayStats containing promotion view counts
   public func getStats() -> DisplayStats {
     DisplayStats(
-      campaigns: cumulativeStorage.campaignCount,
       promotions: cumulativeStorage.promotionCount
     )
   }
   
   /// Get current balancing display counts (resets when configuration changes)
-  /// - Returns: DisplayStats containing campaign and promotion current balancing counts
+  /// - Returns: DisplayStats containing promotion current balancing counts
   public func getBalancingStats() -> DisplayStats {
     DisplayStats(
-      campaigns: balancingStorage.campaignCount,
       promotions: balancingStorage.promotionCount
     )
   }
@@ -138,25 +139,12 @@ public actor CampaignManager: Sendable {
     self.platform = platform
   }
   
-  /// Select a campaign using weighted balancing
-  /// - Parameters:
-  ///   - entries: List of campaigns to select from
-  ///   - weight: Function to get the weight of a campaign
-  /// - Returns: Selected campaign or nil if none available
-  private func pickCampaign(_ entries: [Campaign], weight: (Campaign) -> Int) -> Campaign? {
-    let weighted: [Balancer.Entry] = entries.map {
-      let displayCounts = balancingStorage.getCampaignDisplayCount(for: $0.id)
-      return Balancer.Entry(item: $0, weight: weight($0), displayCounts: displayCounts)
-    }
-    return Balancer(weighted).pick()
-  }
-  
   /// Select a promotion using weighted balancing
   /// - Parameters:
   ///   - entries: List of promotions to select from
   ///   - weight: Function to get the weight of a promotion
   /// - Returns: Selected promotion or nil if none available
-  private func pickPromotion(_ entries: [Campaign.Promotion], weight: (Campaign.Promotion) -> Int) -> Campaign.Promotion? {
+  private func pickPromotion(_ entries: [Promotion], weight: (Promotion) -> Int) -> Promotion? {
     let weighted: [Balancer.Entry] = entries.map {
       let displayCounts = balancingStorage.getPromotionDisplayCount(for: $0.id)
       return Balancer.Entry(item: $0, weight: weight($0), displayCounts: displayCounts)
@@ -165,7 +153,7 @@ public actor CampaignManager: Sendable {
   }
 }
 
-extension Campaign.Target {
+extension Promotion.Target {
   func matches(language: String, platform: String) -> Bool {
     // Check platform targeting
     if let platforms = platforms, !platforms.contains(platform) {
@@ -180,12 +168,12 @@ extension Campaign.Target {
     // Check date range targeting
     let currentDate = Date()
     
-    // If there's a start date and current date is before it, campaign is not yet active
+    // If there's a start date and current date is before it, promotion is not yet active
     if let startDate = startDate, currentDate < startDate {
       return false
     }
     
-    // If there's an end date and current date is after it, campaign has expired
+    // If there's an end date and current date is after it, promotion has expired
     if let endDate = endDate, currentDate > endDate {
       return false
     }

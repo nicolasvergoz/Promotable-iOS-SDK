@@ -15,10 +15,10 @@ struct ConfigFetcherExample {
     do {
       // Use the fetcher to update campaign config
       try await campaignManager.updateConfig(using: defaultFetcher)
-      let campaigns = await campaignManager.campaigns
-      print("Successfully fetched \(campaigns.count) campaigns")
+      let promotions = await campaignManager.promotions
+      print("Successfully fetched \(promotions.count) promotions")
     } catch {
-      print("Failed to fetch campaign config: \(error)")
+      print("Failed to fetch promotions config: \(error)")
     }
   }
   
@@ -33,15 +33,12 @@ struct ConfigFetcherExample {
     do {
       // Use the custom fetcher to update campaign config
       try await campaignManager.updateConfig(using: mockFetcher)
-      let campaigns = await campaignManager.campaigns
-      print("Successfully fetched \(campaigns.count) campaigns")
+      let promotions = await campaignManager.promotions
+      print("Successfully fetched \(promotions.count) promotions")
       
-      // Print some information about the loaded campaigns
-      for campaign in campaigns {
-        print("Campaign ID: \(campaign.id), Weight: \(campaign.weight), Promotions: \(campaign.promotions.count)")
-        for promotion in campaign.promotions {
-          print("  - Promotion: \(promotion.id), Title: \(promotion.title ?? "No title")")
-        }
+      // Print some information about the loaded promotions
+      for promotion in promotions {
+        print("  - Promotion: \(promotion.id), Title: \(promotion.title ?? "No title")")
       }
     } catch {
       print("Failed to fetch campaign config: \(error)")

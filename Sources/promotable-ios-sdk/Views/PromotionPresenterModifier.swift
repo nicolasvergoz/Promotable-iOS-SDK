@@ -12,9 +12,9 @@ struct PromotionPresenterModifier<PromotionView: View>: ViewModifier {
   let campaignManager: CampaignManager
   let presentationMode: PromotionPresentationMode
   let interactiveDismissDisabled: Bool
-  let content: (Campaign.Promotion) -> PromotionView
+  let content: (Promotion) -> PromotionView
   
-  @State private var promotion: Campaign.Promotion?
+  @State private var promotion: Promotion?
   
   func body(content base: Content) -> some View {
     base
@@ -66,7 +66,7 @@ extension View {
     campaignManager: CampaignManager,
     presentationMode: PromotionPresentationMode = .fullScreen,
     interactiveDismissDisabled: Bool = true,
-    content: @escaping (Campaign.Promotion) -> PromotionView
+    content: @escaping (Promotion) -> PromotionView
   ) -> some View {
     modifier(PromotionPresenterModifier(
       isPresented: isPresented,

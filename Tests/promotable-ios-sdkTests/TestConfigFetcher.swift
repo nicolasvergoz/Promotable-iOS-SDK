@@ -2,7 +2,7 @@ import Foundation
 @testable import promotable_ios_sdk
 
 /// Test implementation of ConfigFetcher
-/// Uses the same approach as MockConfigFetcher but adapts for the test environment
+/// Uses a JSON string to provide test configuration
 struct TestConfigFetcher: ConfigFetcher {
   let requiredSchemaVersion: String
   let json: String
@@ -11,9 +11,10 @@ struct TestConfigFetcher: ConfigFetcher {
     self.json = json
     self.requiredSchemaVersion = requiredSchemaVersion
   }
+  // Legacy fetchConfig method removed
   
-  func fetchConfig() async throws -> CampaignsResponse {
-    // Load from the test bundle's CampaignsSample.json file
+  func fetchConfig() async throws -> PromotionsResponse {
+    // Load from the test bundle's JSON string
     guard let data = json.data(using: .utf8) else {
       throw TestError.decoding
     }
@@ -32,8 +33,9 @@ struct TestConfigFetcher: ConfigFetcher {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         
+        // Decode using the promotions format
         do {
-          return try decoder.decode(CampaignsResponse.self, from: data)
+          return try decoder.decode(PromotionsResponse.self, from: data)
         } catch {
           throw TestError.decoding
         }
@@ -46,6 +48,8 @@ struct TestConfigFetcher: ConfigFetcher {
       throw TestError.decoding
     }
   }
+  
+  // Legacy helper methods removed
 
   // Helper method for date formatting
   private func isoDate(_ string: String) -> Date? {

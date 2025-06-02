@@ -2,9 +2,9 @@ import Testing
 import Foundation
 @testable import promotable_ios_sdk
 
-/// Tests for campaign models and storage behavior
+/// Tests for promotion models and storage behavior
 @Suite
-struct CampaignsTests {
+struct PromotionsTests {
   let jsonSample: String
   
   init() {
@@ -13,52 +13,43 @@ struct CampaignsTests {
     self.jsonSample = String(data: data, encoding: .utf8)!
   }
   
-  /// Tests that the campaign JSON can be properly decoded into model objects
-  @Test
-  func testDecodingCampaignsJSON() {
+  /// Tests that the promotions JSON can be properly decoded into model objects
+  @Test("Decoding promotions JSON")
+  func testDecodingPromotionsJSON() throws {
     let decoder = JSONDecoder()
     decoder.dateDecodingStrategy = .iso8601
     let data = jsonSample.data(using: .utf8)!
     
-    guard let response = try? decoder.decode(CampaignsResponse.self, from: data) else {
-      return
+    // Try to decode using the new format
+    let response = try decoder.decode(PromotionsResponse.self, from: data)
+    #expect(response.promotions.count >= 1)
+    
+    // Verify some promotions properties
+    if let promo = response.promotions.first {
+      #expect(promo.id.isEmpty == false)
+      #expect(promo.action.label.isEmpty == false)
     }
-    
-    #expect(response.campaigns.count == 2)
-    
-    let campaignA = response.campaigns.first { $0.id == "campaignA" }
-    #expect(campaignA?.weight == 1)
-    #expect(campaignA?.promotions.count == 1)
-    
-    let campaignB = response.campaigns.first { $0.id == "campaignB" }
-    #expect(campaignB?.weight == 2)
-    #expect(campaignB?.promotions.count == 2)
-    #expect(campaignB?.promotions.last?.weight == 1)
   }
   
-  /// Tests that the campaign storage correctly increments counts and resets
-  @Test("CampaignStorage - increment and reset")
+  /// Tests that the promotion storage correctly increments counts and resets
+  @Test("PromotionStorage - increment and reset")
   func testCampaignStorage() {
     let storage = CampaignStorageInMemory()
     
-    storage.incrementDisplayCount(campaignId: "A", promotionId: "A1")
-    storage.incrementDisplayCount(campaignId: "A", promotionId: "A1")
-    storage.incrementDisplayCount(campaignId: "B", promotionId: "B1")
+    storage.incrementDisplayCount(promotionId: "A1")
+    storage.incrementDisplayCount(promotionId: "A1")
+    storage.incrementDisplayCount(promotionId: "B1")
     
-    #expect(storage.getCampaignDisplayCount(for: "A") == 2)
-    #expect(storage.getCampaignDisplayCount(for: "B") == 1)
     #expect(storage.getPromotionDisplayCount(for: "A1") == 2)
     #expect(storage.getPromotionDisplayCount(for: "B1") == 1)
     
     storage.reset()
-    #expect(storage.getCampaignDisplayCount(for: "A") == 0)
-    #expect(storage.getCampaignDisplayCount(for: "B") == 0)
     #expect(storage.getPromotionDisplayCount(for: "A1") == 0)
     #expect(storage.getPromotionDisplayCount(for: "B1") == 0)
   }
   
-  @Test("CampaignManager - selects promotion from highest weight campaign")
-  func testCampaignSelection() async throws {
+  @Test("PromotionManager - selects promotion based on weight and targeting")
+  func testPromotionSelection() async throws {
     // Create a fresh storage instance for this test
     let manager = CampaignManager(
       balancingStorage: CampaignStorageInMemory(),
@@ -69,7 +60,7 @@ struct CampaignsTests {
     let mockFetcher = TestConfigFetcher(json: jsonSample)
     try await manager.updateConfig(using: mockFetcher)
     
-    var promo: Campaign.Promotion? = await manager.nextPromotion()
+    var promo: Promotion? = await manager.nextPromotion()
     print("Selected", promo?.id ?? "nil")
     #expect(promo?.id == "a1.acme")
     
@@ -128,20 +119,20 @@ struct CampaignsTests {
     // Create the mock fetcher that loads from the test bundle
     let mockFetcher = TestConfigFetcher(json: jsonSample)
     
-    // Update campaign config using the fetcher
+    // Update promotion config using the fetcher
     try await manager.updateConfig(using: mockFetcher)
     
-    // Verify campaigns were loaded correctly
-    #expect(await manager.campaigns.count == 2)
+    // Verify promotions were loaded correctly
+    #expect(await manager.promotions.count > 0)
     
-    // Verify we can access a campaign promotion using the fetched data
+    // Verify we can access a promotion using the fetched data
     let promo = await manager.nextPromotion()
     #expect(promo != nil)
+    // Check for known promotion IDs from sample file
     #expect(promo?.id == "a1.acme" || promo?.id == "b1.aven" || promo?.id == "b2.update")
     
     // Verify stats are reset when loading new config
     let stats = await manager.getStats()
-    #expect(stats.campaigns.isEmpty == false)
     #expect(stats.promotions.isEmpty == false)
   }
 }

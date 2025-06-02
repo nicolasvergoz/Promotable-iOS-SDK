@@ -1,50 +1,23 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Promotable Campaigns Configuration Schema",
-  "description": "Schema for defining in-app self-promotion campaigns and promotions in the Promotable iOS SDK",
+  "title": "Promotable Promotions Configuration Schema",
+  "description": "Schema for defining in-app self-promotions in the Promotable iOS SDK",
   "type": "object",
-  "required": ["schemaVersion", "campaigns"],
+  "required": ["schemaVersion", "promotions"],
   "properties": {
     "schemaVersion": {
       "type": "string",
       "description": "Version of the schema being used"
     },
-    "campaigns": {
+    "promotions": {
       "type": "array",
-      "description": "List of campaigns containing promotions to be displayed",
+      "description": "List of promotions to be displayed",
       "items": {
-        "$ref": "#/definitions/campaign"
+        "$ref": "#/definitions/promotion"
       }
     }
   },
   "definitions": {
-    "campaign": {
-      "type": "object",
-      "required": ["id", "promotions"],
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the campaign"
-        },
-        "weight": {
-          "type": "number",
-          "description": "Relative weight for campaign selection",
-          "default": 1
-        },
-        "target": {
-          "$ref": "#/definitions/target",
-          "description": "Targeting criteria for the campaign"
-        },
-        "promotions": {
-          "type": "array",
-          "description": "List of promotions within this campaign",
-          "items": {
-            "$ref": "#/definitions/promotion"
-          },
-          "minItems": 1
-        }
-      }
-    },
     "target": {
       "type": "object",
       "properties": {
@@ -111,13 +84,17 @@
         },
         "weight": {
           "type": "number",
-          "description": "Relative weight for promotion selection within a campaign",
+          "description": "Relative weight for promotion selection",
           "default": 1
         },
         "minDisplayDuration": {
           "type": "number",
           "description": "Minimum time in seconds the promotion should be displayed",
           "default": 0
+        },
+        "target": {
+          "$ref": "#/definitions/target",
+          "description": "Targeting criteria for the promotion"
         }
       }
     },

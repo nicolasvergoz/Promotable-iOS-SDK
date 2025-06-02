@@ -1,6 +1,6 @@
 import Foundation
 
-/// Example of a custom ConfigFetcher implementation that loads from a local file
+/// Example implementation of ConfigFetcher that loads from a local sample file
 struct MockConfigFetcher: ConfigFetcher {
   enum MockError: Error {
     case missingJSONFile
@@ -14,7 +14,7 @@ struct MockConfigFetcher: ConfigFetcher {
     self.requiredSchemaVersion = requiredSchemaVersion
   }
   
-  func fetchConfig() async throws -> CampaignsResponse {
+  func fetchConfig() async throws -> PromotionsResponse {
     // Load from the local CampaignsSample.json file
     guard let fileUrl = Bundle.module.url(forResource: "CampaignsSample", withExtension: "json") else {
       throw MockError.missingJSONFile
@@ -36,7 +36,7 @@ struct MockConfigFetcher: ConfigFetcher {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         
-        return try decoder.decode(CampaignsResponse.self, from: data)
+        return try decoder.decode(PromotionsResponse.self, from: data)
       } else {
         throw ConfigError.invalidResponse
       }

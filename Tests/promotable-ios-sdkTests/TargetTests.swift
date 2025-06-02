@@ -15,71 +15,80 @@ struct TargetTests {
       platform: "ios"
     )
     
-    // Create test JSON with various targeting scenarios
+    // Create test JSON with various targeting scenarios using the new promotion-focused structure
     let testJson = """
     {
       "schemaVersion": "0.1.0",
-      "campaigns": [
+      "promotions": [
         {
-          "id": "no-target",
-          "weight": 1,
-          "promotions": [{ "id": "promo-no-target", "action": { "label": "Action", "url": "https://example.com" }, "content": [{ "description": "Test content" }] }]
+          "id": "promo-no-target", 
+          "action": { "label": "Action", "url": "https://example.com" }, 
+          "content": [{ "description": "Test content" }],
+          "weight": 1
         },
         {
-          "id": "ios-only",
+          "id": "promo-ios", 
+          "action": { "label": "Action", "url": "https://example.com" }, 
+          "content": [{ "description": "iOS content" }],
           "weight": 1,
-          "target": { "platforms": ["ios"] },
-          "promotions": [{ "id": "promo-ios", "action": { "label": "Action", "url": "https://example.com" }, "content": [{ "description": "iOS content" }] }]
+          "target": { "platforms": ["ios"] }
         },
         {
-          "id": "android-only",
+          "id": "promo-android", 
+          "action": { "label": "Action", "url": "https://example.com" }, 
+          "content": [{ "description": "Android content" }],
           "weight": 1,
-          "target": { "platforms": ["android"] },
-          "promotions": [{ "id": "promo-android", "action": { "label": "Action", "url": "https://example.com" }, "content": [{ "description": "Android content" }] }]
+          "target": { "platforms": ["android"] }
         },
         {
-          "id": "fr-only",
+          "id": "promo-fr", 
+          "action": { "label": "Action", "url": "https://example.com" }, 
+          "content": [{ "description": "French content" }],
           "weight": 1,
-          "target": { "languages": ["fr"] },
-          "promotions": [{ "id": "promo-fr", "action": { "label": "Action", "url": "https://example.com" }, "content": [{ "description": "French content" }] }]
+          "target": { "languages": ["fr"] }
         },
         {
-          "id": "multi-language",
+          "id": "promo-multi-lang", 
+          "action": { "label": "Action", "url": "https://example.com" }, 
+          "content": [{ "description": "English/Spanish content" }],
           "weight": 1,
-          "target": { "languages": ["en", "es"] },
-          "promotions": [{ "id": "promo-multi-lang", "action": { "label": "Action", "url": "https://example.com" }, "content": [{ "description": "English/Spanish content" }] }]
+          "target": { "languages": ["en", "es"] }
         },
         {
-          "id": "future-campaign",
+          "id": "promo-future", 
+          "action": { "label": "Action", "url": "https://example.com" }, 
+          "content": [{ "description": "Future content" }],
           "weight": 1,
-          "target": { "startDate": "\(ISO8601DateFormatter().string(from: Date().addingTimeInterval(86400)))" },
-          "promotions": [{ "id": "promo-future", "action": { "label": "Action", "url": "https://example.com" }, "content": [{ "description": "Future content" }] }]
+          "target": { "startDate": "\(ISO8601DateFormatter().string(from: Date().addingTimeInterval(86400)))" }
         },
         {
-          "id": "past-campaign",
+          "id": "promo-past", 
+          "action": { "label": "Action", "url": "https://example.com" }, 
+          "content": [{ "description": "Past content" }],
           "weight": 1,
-          "target": { "endDate": "\(ISO8601DateFormatter().string(from: Date().addingTimeInterval(-86400)))" },
-          "promotions": [{ "id": "promo-past", "action": { "label": "Action", "url": "https://example.com" }, "content": [{ "description": "Past content" }] }]
+          "target": { "endDate": "\(ISO8601DateFormatter().string(from: Date().addingTimeInterval(-86400)))" }
         },
         {
-          "id": "active-campaign",
+          "id": "promo-active", 
+          "action": { "label": "Action", "url": "https://example.com" }, 
+          "content": [{ "description": "Active content" }],
           "weight": 1,
           "target": { 
             "startDate": "\(ISO8601DateFormatter().string(from: Date().addingTimeInterval(-86400)))",
             "endDate": "\(ISO8601DateFormatter().string(from: Date().addingTimeInterval(86400)))"
-          },
-          "promotions": [{ "id": "promo-active", "action": { "label": "Action", "url": "https://example.com" }, "content": [{ "description": "Active content" }] }]
+          }
         },
         {
-          "id": "complex-targeting",
+          "id": "promo-complex", 
+          "action": { "label": "Action", "url": "https://example.com" }, 
+          "content": [{ "description": "Complex targeting content" }],
           "weight": 1,
           "target": { 
             "platforms": ["ios"],
             "languages": ["en"],
             "startDate": "\(ISO8601DateFormatter().string(from: Date().addingTimeInterval(-86400)))",
             "endDate": "\(ISO8601DateFormatter().string(from: Date().addingTimeInterval(86400)))"
-          },
-          "promotions": [{ "id": "promo-complex", "action": { "label": "Action", "url": "https://example.com" }, "content": [{ "description": "Complex targeting content" }] }]
+          }
         }
       ]
     }
@@ -89,8 +98,8 @@ struct TargetTests {
     let mockFetcher = TestConfigFetcher(json: testJson)
     try await manager.updateConfig(using: mockFetcher)
     
-    // Verify campaigns were loaded correctly
-    #expect(await manager.campaigns.count == 9)
+    // Verify promotions were loaded correctly
+    #expect(await manager.promotions.count == 9)
     
     // Test with default settings (en, ios)
     var eligibleIds = Set<String>()

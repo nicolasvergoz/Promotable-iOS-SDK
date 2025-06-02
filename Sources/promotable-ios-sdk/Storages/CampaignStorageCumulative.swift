@@ -1,11 +1,9 @@
 import Foundation
 
-/// Persistent storage for cumulative campaign and promotion display statistics
+/// Persistent storage for cumulative promotion display statistics
 public final class CampaignStorageCumulative: CampaignStorageProtocol {
-  public var campaignCount: [String : Int] = [:]
   public var promotionCount: [String : Int] = [:]
   
-  private let campaignsKey = "com.promotable.sdk.cumulativecampaignCount"
   private let promotionsKey = "com.promotable.sdk.cumulativepromotionCount"
   
   public init() {
@@ -13,10 +11,6 @@ public final class CampaignStorageCumulative: CampaignStorageProtocol {
   }
   
   private func load() {
-    if let data = UserDefaults.standard.data(forKey: campaignsKey),
-       let decoded = try? JSONDecoder().decode([String: Int].self, from: data) {
-      campaignCount = decoded
-    }
     if let data = UserDefaults.standard.data(forKey: promotionsKey),
        let decoded = try? JSONDecoder().decode([String: Int].self, from: data) {
       promotionCount = decoded
@@ -24,23 +18,14 @@ public final class CampaignStorageCumulative: CampaignStorageProtocol {
   }
   
   private func save() {
-    if let campaignData = try? JSONEncoder().encode(campaignCount) {
-      UserDefaults.standard.set(campaignData, forKey: campaignsKey)
-    }
-    
     if let promotionData = try? JSONEncoder().encode(promotionCount) {
       UserDefaults.standard.set(promotionData, forKey: promotionsKey)
     }
   }
   
-  public func incrementDisplayCount(campaignId: String, promotionId: String) {
-    campaignCount[campaignId, default: 0] += 1
+  public func incrementDisplayCount(promotionId: String) {
     promotionCount[promotionId, default: 0] += 1
     save()
-  }
-  
-  public func getCampaignDisplayCount(for id: String) -> Int {
-    return campaignCount[id, default: 0]
   }
   
   public func getPromotionDisplayCount(for id: String) -> Int {

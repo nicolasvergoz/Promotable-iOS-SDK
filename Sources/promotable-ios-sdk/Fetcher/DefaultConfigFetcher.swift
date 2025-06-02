@@ -1,7 +1,7 @@
 import Foundation
 
 /// Default implementation of the ConfigFetcher protocol
-/// Provides a simple way to fetch campaign configuration from a URL
+/// Provides a simple way to fetch promotions configuration from a URL
 public struct DefaultConfigFetcher: ConfigFetcher {
   public let requiredSchemaVersion: String
   private let configURL: URL
@@ -9,7 +9,7 @@ public struct DefaultConfigFetcher: ConfigFetcher {
   
   /// Initializes a new instance of DefaultConfigFetcher
   /// - Parameters:
-  ///   - configURL: The URL to fetch the campaign configuration from
+  ///   - configURL: The URL to fetch the promotions configuration from
   ///   - urlSession: The URLSession to use for fetching (defaults to shared)
   ///   - requiredSchemaVersion: The schema version this fetcher expects and can handle
   public init(configURL: URL, urlSession: URLSession = .shared, requiredSchemaVersion: String) {
@@ -18,7 +18,7 @@ public struct DefaultConfigFetcher: ConfigFetcher {
     self.requiredSchemaVersion = requiredSchemaVersion
   }
   
-  public func fetchConfig() async throws -> CampaignsResponse {
+  public func fetchConfig() async throws -> PromotionsResponse {
     do {
       let (data, response) = try await urlSession.data(from: configURL)
       guard let httpResponse = response as? HTTPURLResponse,
@@ -41,7 +41,7 @@ public struct DefaultConfigFetcher: ConfigFetcher {
       let decoder = JSONDecoder()
       decoder.dateDecodingStrategy = .iso8601
       do {
-        return try decoder.decode(CampaignsResponse.self, from: data)
+        return try decoder.decode(PromotionsResponse.self, from: data)
       } catch {
         throw ConfigError.decodingFailed(error)
       }

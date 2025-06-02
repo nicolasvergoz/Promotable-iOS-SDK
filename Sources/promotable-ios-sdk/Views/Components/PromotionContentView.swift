@@ -2,11 +2,11 @@ import SwiftUI
 
 /// Component responsible for displaying promotion content items
 public struct PromotionContentView: View {
-  public let contentItems: [Campaign.Content]
+  public let contentItems: [Promotion.Content]
   
   /// Creates a new PromotionContentView with the specified content items
   /// - Parameter contentItems: Array of content items to display
-  public init(contentItems: [Campaign.Content]) {
+  public init(contentItems: [Promotion.Content]) {
     self.contentItems = contentItems
   }
   
@@ -21,7 +21,7 @@ public struct PromotionContentView: View {
   }
   
   @ViewBuilder
-  private func contentItemRow(item: Campaign.Content) -> some View {
+  private func contentItemRow(item: Promotion.Content) -> some View {
     Text(item.description)
       .font(.body)
       .foregroundColor(.secondary)
@@ -31,8 +31,8 @@ public struct PromotionContentView: View {
 
 #Preview {
   PromotionContentView(contentItems: [
-    Campaign.Content(description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique suscipit lacinia."),
-    Campaign.Content(description: "Nulla facilisi. Cras vulputate, nisl nec finibus malesuada, nunc nisi ultricies orci.")
+    Promotion.Content(description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique suscipit lacinia."),
+    Promotion.Content(description: "Nulla facilisi. Cras vulputate, nisl nec finibus malesuada, nunc nisi ultricies orci.")
   ])
   .padding()
 }

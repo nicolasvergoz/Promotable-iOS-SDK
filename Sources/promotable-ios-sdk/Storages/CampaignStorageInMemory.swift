@@ -1,18 +1,12 @@
 import Foundation
 
-/// A simple in-memory implementation of campaign storage
-/// Stores campaign and promotion display counts in memory dictionaries
+/// A simple in-memory implementation of promotion storage
+/// Stores promotion display counts in memory dictionary
 final class CampaignStorageInMemory: CampaignStorageProtocol {
-  var campaignCount: [String : Int] = [:]
   var promotionCount: [String : Int] = [:]
   
-  func incrementDisplayCount(campaignId: String, promotionId: String) {
-    campaignCount[campaignId, default: 0] += 1
+  func incrementDisplayCount(promotionId: String) {
     promotionCount[promotionId, default: 0] += 1
-  }
-  
-  func getCampaignDisplayCount(for id: String) -> Int {
-    return campaignCount[id, default: 0]
   }
   
   func getPromotionDisplayCount(for id: String) -> Int {
@@ -20,7 +14,6 @@ final class CampaignStorageInMemory: CampaignStorageProtocol {
   }
   
   func reset() {
-    campaignCount = [:]
     promotionCount = [:]
   }
 }
