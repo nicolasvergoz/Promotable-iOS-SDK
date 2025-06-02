@@ -1,5 +1,5 @@
 import Foundation
-@testable import promotable_ios_sdk
+@testable import Promotable
 
 /// Test implementation of ConfigFetcher
 /// Uses a JSON string to provide test configuration

@@ -4,26 +4,26 @@
 import PackageDescription
 
 let package = Package(
-  name: "promotable-ios-sdk",
+  name: "Promotable",
   platforms: [
     .iOS(.v17),
     .macOS(.v14)
   ],
   products: [
     .library(
-      name: "promotable-ios-sdk",
-      targets: ["promotable-ios-sdk"]),
+      name: "Promotable",
+      targets: ["Promotable"]),
   ],
   targets: [
     .target(
-      name: "promotable-ios-sdk",
+      name: "Promotable",
       resources: [
         .process("Examples/CampaignsSample.json")
       ]
     ),
     .testTarget(
-      name: "promotable-ios-sdkTests",
-      dependencies: ["promotable-ios-sdk"]
+      name: "PromotableTests",
+      dependencies: ["Promotable"]
     ),
   ]
 )

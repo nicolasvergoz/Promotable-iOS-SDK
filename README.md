@@ -40,11 +40,11 @@ dependencies: [
 ```swift
 import Promotable
 
-// Create a campaign manager
-let campaignManager = CampaignManager()
+// Create a promotion manager
+let promotionManager = PromotionManager()
 
 // Configure with a JSON URL
-try await campaignManager.configure(with: URL(string: "https://your-domain.com/campaigns.json")!)
+try await promotionManager.configure(with: URL(string: "https://your-domain.com/promotions.json")!)
 
 // Use the default presenter in SwiftUI
 struct ContentView: View {
@@ -56,7 +56,7 @@ struct ContentView: View {
         }
         .promotionPresenter(
             isPresented: $showPromotion,
-            campaignManager: campaignManager
+            promotionManager: promotionManager
         )
     }
 }
@@ -68,14 +68,14 @@ You can implement your own config fetcher by conforming to the `ConfigFetcher` p
 
 ```swift
 struct MyCustomConfigFetcher: ConfigFetcher {
-    func fetchConfig() async throws -> CampaignsResponse {
+    func fetchConfig() async throws -> PromotionsResponse {
         // Your custom implementation
     }
 }
 
-// Then use it with the campaign manager
+// Then use it with the promotion manager
 let customFetcher = MyCustomConfigFetcher()
-let campaignManager = CampaignManager(configFetcher: customFetcher)
+let promotionManager = PromotionManager(configFetcher: customFetcher)
 ```
 
 ### Custom Presentation
@@ -96,7 +96,7 @@ struct MyCustomPromotionView: View {
 // Use it with the promotion presenter
 .promotionPresenter(
     isPresented: $showPromotion,
-    campaignManager: campaignManager,
+    promotionManager: promotionManager,
     content: { promotion, dismiss, action in
         MyCustomPromotionView(
             promotion: promotion,
@@ -109,43 +109,40 @@ struct MyCustomPromotionView: View {
 
 ## JSON Configuration Format
 
-Promotable uses a structured JSON format to configure campaigns and promotions. Here's a basic example:
+Promotable uses a structured JSON format to configure promotions. Here's a basic example:
 
 ```json
 {
   "schema_version": "1.0",
-  "campaigns": [
+  "reset_balancing_date": "2025-12-31T00:00:00Z",
+  "reset_cumulative_date": "2026-12-31T00:00:00Z",
+  "promotions": [
     {
-      "id": "new_app_promotion",
+      "id": "main_promotion",
       "active": true,
+      "weight": 100,
       "target": {
         "platforms": ["ios", "macos"],
         "languages": ["en", "fr"]
       },
-      "promotions": [
-        {
-          "id": "main_promotion",
-          "weight": 100,
-          "title": "Check Out Our New App!",
-          "subtitle": "Enhance your productivity with our latest tool",
-          "content": "Our new app helps you organize your workflow...",
-          "icon": {
-            "url": "https://example.com/icon.png",
-            "size": {
-              "width": 120,
-              "height": 120
-            }
-          },
-          "cover": {
-            "url": "https://example.com/cover.jpg"
-          },
-          "action": {
-            "title": "Download Now",
-            "url": "https://apps.apple.com/app/id123456789",
-            "background_color": "#FF5733"
-          }
+      "title": "Check Out Our New App!",
+      "subtitle": "Enhance your productivity with our latest tool",
+      "content": "Our new app helps you organize your workflow...",
+      "icon": {
+        "url": "https://example.com/icon.png",
+        "size": {
+          "width": 120,
+          "height": 120
         }
-      ]
+      },
+      "cover": {
+        "url": "https://example.com/cover.jpg"
+      },
+      "action": {
+        "title": "Download Now",
+        "url": "https://apps.apple.com/app/id123456789",
+        "background_color": "#FF5733"
+      }
     }
   ]
 }
@@ -156,7 +153,7 @@ Promotable uses a structured JSON format to configure campaigns and promotions. 
 The JSON schema used for campaign configuration validation is located in the repository at:
 
 ```
-Sources/promotable-ios-sdk/campaigns.schema.json
+Sources/Promotable/promotions.schema.json
 ```
 
 This file defines the structure and validation rules for campaign configuration JSON payloads used by the SDK.

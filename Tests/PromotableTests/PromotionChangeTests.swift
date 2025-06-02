@@ -1,6 +1,6 @@
 import Testing
 import Foundation
-@testable import promotable_ios_sdk
+@testable import Promotable
 
 @Suite
 struct PromotionChangeTests {
