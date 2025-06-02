@@ -7,10 +7,10 @@ struct TargetTests {
   
   @Test("Promotion Target Eligibility - platforms, languages, and date ranges")
   func testPromotionTargetEligibility() async throws {
-    // Create a campaign manager with different platform/language settings for testing
-    let manager = CampaignManager(
-      balancingStorage: CampaignStorageInMemory(),
-      cumulativeStorage: CampaignStorageInMemory(),
+    // Create a promotion manager with different platform/language settings for testing
+    let manager = PromotionManager(
+      balancingStorage: PromotionStorageInMemory(),
+      cumulativeStorage: PromotionStorageInMemory(),
       language: "en",
       platform: "ios"
     )
@@ -109,8 +109,8 @@ struct TargetTests {
       }
     }
     
-    // Should include: no-target, ios-only, multi-language, active-campaign, complex-targeting
-    // Should exclude: android-only, fr-only, future-campaign, past-campaign
+    // Should include: no-target, ios-only, multi-language, active-promo, complex-targeting
+    // Should exclude: android-only, fr-only, future-promo, past-promo
     #expect(eligibleIds.contains("promo-no-target"))
     #expect(eligibleIds.contains("promo-ios"))
     #expect(eligibleIds.contains("promo-multi-lang"))

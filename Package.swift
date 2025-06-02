@@ -18,7 +18,7 @@ let package = Package(
     .target(
       name: "Promotable",
       resources: [
-        .process("Examples/CampaignsSample.json")
+        .process("Examples/PromotionsSample.json")
       ]
     ),
     .testTarget(

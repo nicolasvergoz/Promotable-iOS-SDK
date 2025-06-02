@@ -6,10 +6,10 @@ enum PromotionPresentationMode {
   case fullScreen
 }
 
-/// View modifier that manages displaying promotions from a campaign manager
+/// View modifier that manages displaying promotions from a promotion manager
 struct PromotionPresenterModifier<PromotionView: View>: ViewModifier {
   @Binding var isPresented: Bool
-  let campaignManager: CampaignManager
+  let promotionManager: PromotionManager
   let presentationMode: PromotionPresentationMode
   let interactiveDismissDisabled: Bool
   let content: (Promotion) -> PromotionView
@@ -23,7 +23,7 @@ struct PromotionPresenterModifier<PromotionView: View>: ViewModifier {
       }
       .task(id: isPresented) { @MainActor in
         if isPresented {
-          promotion = await campaignManager.nextPromotion()
+          promotion = await promotionManager.nextPromotion()
         }
       }
   }
@@ -56,21 +56,21 @@ extension View {
   /// Attaches a promotion presenter to a view
   /// - Parameters:
   ///   - isPresented: Binding that controls when the promotion is shown
-  ///   - campaignManager: Manager that provides promotions to display
+  ///   - promotionManager: Manager that provides promotions to display
   ///   - presentationMode: How the promotion should be presented (sheet or fullscreen)
   ///   - interactiveDismissDisabled: Whether user can dismiss with a gesture
   ///   - content: View builder for creating the promotion view
   /// - Returns: A view with the promotion presenter attached
   func promotionPresenter<PromotionView: View>(
     isPresented: Binding<Bool>,
-    campaignManager: CampaignManager,
+    promotionManager: PromotionManager,
     presentationMode: PromotionPresentationMode = .fullScreen,
     interactiveDismissDisabled: Bool = true,
     content: @escaping (Promotion) -> PromotionView
   ) -> some View {
     modifier(PromotionPresenterModifier(
       isPresented: isPresented,
-      campaignManager: campaignManager,
+      promotionManager: promotionManager,
       presentationMode: presentationMode,
       interactiveDismissDisabled: interactiveDismissDisabled,
       content: content
@@ -82,7 +82,7 @@ extension View {
 #Preview {
   @Previewable @State var isPresented: Bool = false
   
-  let manager = CampaignManager(
+  let manager = PromotionManager(
     language: "en",
     platform: "ios"
   )
@@ -92,7 +92,7 @@ extension View {
   }
   .promotionPresenter(
     isPresented: $isPresented,
-    campaignManager: manager
+    promotionManager: manager
   ) { promotion in
     DefaultPromotionView(
       promotion: promotion,
@@ -101,7 +101,7 @@ extension View {
     )
   }
   .task {
-    let fileUrl = Bundle.module.url(forResource: "CampaignsSample", withExtension: "json")!
+    let fileUrl = Bundle.module.url(forResource: "PromotionsSample", withExtension: "json")!
     
     do {
       // Create a custom fetcher that loads from a local JSON file

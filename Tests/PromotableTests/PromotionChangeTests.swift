@@ -52,9 +52,9 @@ struct PromotionChangeTests {
   
   @Test("Reset Mechanism - When resetBalancingDate is provided, balancing storage resets")
   func testResetMechanism_whenResetBalancingDateProvided_balancingStorageResets() async throws {
-    let balancingStorage = CampaignStorageInMemory()
-    let cumulativeStorage = CampaignStorageInMemory()
-    let manager = CampaignManager(
+    let balancingStorage = PromotionStorageInMemory()
+    let cumulativeStorage = PromotionStorageInMemory()
+    let manager = PromotionManager(
       balancingStorage: balancingStorage,
       cumulativeStorage: cumulativeStorage
     )
@@ -104,9 +104,9 @@ struct PromotionChangeTests {
   
   @Test("Reset Mechanism - When no reset dates provided, stats persist")
   func testResetMechanism_whenNoResetDatesProvided_statsPersist() async throws {
-    let balancingStorage = CampaignStorageInMemory()
-    let cumulativeStorage = CampaignStorageInMemory()
-    let manager = CampaignManager(
+    let balancingStorage = PromotionStorageInMemory()
+    let cumulativeStorage = PromotionStorageInMemory()
+    let manager = PromotionManager(
       balancingStorage: balancingStorage,
       cumulativeStorage: cumulativeStorage
     )
@@ -142,9 +142,9 @@ struct PromotionChangeTests {
   
   @Test("Reset Mechanism - When resetCumulativeDate provided, both storages reset")
   func testResetMechanism_whenResetCumulativeDateProvided_bothStoragesReset() async throws {
-    let balancingStorage = CampaignStorageInMemory()
-    let cumulativeStorage = CampaignStorageInMemory()
-    let manager = CampaignManager(
+    let balancingStorage = PromotionStorageInMemory()
+    let cumulativeStorage = PromotionStorageInMemory()
+    let manager = PromotionManager(
       balancingStorage: balancingStorage,
       cumulativeStorage: cumulativeStorage
     )

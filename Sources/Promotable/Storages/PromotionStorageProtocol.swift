@@ -1,7 +1,7 @@
 import Foundation
 
 /// Protocol for tracking display statistics that persist across configuration changes
-public protocol CampaignStorageProtocol {
+public protocol PromotionStorageProtocol {
   var promotionCount: [String: Int] { get set }
   
   /// Increment the display count for a promotion

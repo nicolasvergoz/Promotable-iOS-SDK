@@ -8,7 +8,7 @@ struct PromotionsTests {
   let jsonSample: String
   
   init() {
-    let fileUrl = Bundle.module.url(forResource: "CampaignsSample", withExtension: "json")!
+    let fileUrl = Bundle.module.url(forResource: "PromotionsSample", withExtension: "json")!
     let data = try! Data(contentsOf: fileUrl)
     self.jsonSample = String(data: data, encoding: .utf8)!
   }
@@ -33,8 +33,8 @@ struct PromotionsTests {
   
   /// Tests that the promotion storage correctly increments counts and resets
   @Test("PromotionStorage - increment and reset")
-  func testCampaignStorage() {
-    let storage = CampaignStorageInMemory()
+  func testPromotionStorage() {
+    let storage = PromotionStorageInMemory()
     
     storage.incrementDisplayCount(promotionId: "A1")
     storage.incrementDisplayCount(promotionId: "A1")
@@ -51,9 +51,9 @@ struct PromotionsTests {
   @Test("PromotionManager - selects promotion based on weight and targeting")
   func testPromotionSelection() async throws {
     // Create a fresh storage instance for this test
-    let manager = CampaignManager(
-      balancingStorage: CampaignStorageInMemory(),
-      cumulativeStorage: CampaignStorageInMemory()
+    let manager = PromotionManager(
+      balancingStorage: PromotionStorageInMemory(),
+      cumulativeStorage: PromotionStorageInMemory()
     )
     
     // Create the mock fetcher that loads from the test bundle
@@ -110,10 +110,10 @@ struct PromotionsTests {
   
   @Test("ConfigFetcher - mock implementation")
   func testConfigFetcher() async throws {
-    // Create a campaign manager with a fresh storage instance
-    let manager = CampaignManager(
-      balancingStorage: CampaignStorageInMemory(),
-      cumulativeStorage: CampaignStorageInMemory()
+    // Create a promotion manager with a fresh storage instance
+    let manager = PromotionManager(
+      balancingStorage: PromotionStorageInMemory(),
+      cumulativeStorage: PromotionStorageInMemory()
     )
     
     // Create the mock fetcher that loads from the test bundle

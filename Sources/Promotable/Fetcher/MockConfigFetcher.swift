@@ -15,8 +15,8 @@ struct MockConfigFetcher: ConfigFetcher {
   }
   
   func fetchConfig() async throws -> PromotionsResponse {
-    // Load from the local CampaignsSample.json file
-    guard let fileUrl = Bundle.module.url(forResource: "CampaignsSample", withExtension: "json") else {
+    // Load from the local PromotionsSample.json file
+    guard let fileUrl = Bundle.module.url(forResource: "PromotionsSample", withExtension: "json") else {
       throw MockError.missingJSONFile
     }
     

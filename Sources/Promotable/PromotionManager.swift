@@ -1,7 +1,7 @@
 import Foundation
 
 /// Manages promotion configurations, selection, and statistics
-public actor CampaignManager: Sendable {
+public actor PromotionManager: Sendable {
   /// The current loaded promotions
   var promotions: [Promotion] = []
 
@@ -11,26 +11,26 @@ public actor CampaignManager: Sendable {
   /// Stores the last time cumulative storage was reset
   private var lastCumulativeReset: Date = Date.distantPast
   
-  /// Storage for balancing campaign and promotion display counts
+  /// Storage for balancing promotion display counts
   /// These counts reset when configuration changes
-  private let balancingStorage: CampaignStorageProtocol
+  private let balancingStorage: PromotionStorageProtocol
   
   /// Storage for cumulative display statistics
   /// These stats persist across configuration changes
-  private let cumulativeStorage: CampaignStorageProtocol
+  private let cumulativeStorage: PromotionStorageProtocol
   
   public var platform: String
   public var language: String
   
-  /// Initialize the campaign manager with a targeting context
+  /// Initialize the promotion manager with a targeting context
   /// - Parameters:
-  ///   - balancingStorage: Storage implementation for balancing campaign display counts (resets on config change)
+  ///   - balancingStorage: Storage implementation for balancing promotion display counts (resets on config change)
   ///   - statsStorage: Storage implementation for cumulative display statistics (persists across config changes)
   ///   - language: Current language for targeting, defaults to "en"
   ///   - platform: Current platform for targeting, defaults to "ios"
   public init(
-    balancingStorage: CampaignStorageProtocol = BalancingCampaignStorage(),
-    cumulativeStorage: CampaignStorageProtocol = CampaignStorageCumulative(),
+    balancingStorage: PromotionStorageProtocol = PromotionStorageBalancing(),
+    cumulativeStorage: PromotionStorageProtocol = PromotionStorageCumulative(),
     language: String = "en",
     platform: String = "ios"
   ) {
@@ -89,9 +89,6 @@ public actor CampaignManager: Sendable {
   }
 
   // Legacy wouldConfigChange methods removed
-  
-  /// Checks if a given promotions array would change the current config
-  // Legacy wouldConfigChange method removed
   
   /// Get the next promotion to display based on eligibility and weighted balancing
   /// - Returns: A promotion to display, or nil if none available

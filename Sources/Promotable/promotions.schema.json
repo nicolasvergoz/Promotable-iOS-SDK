@@ -23,14 +23,14 @@
       "properties": {
         "platforms": {
           "type": "array",
-          "description": "Platforms where this campaign should be displayed",
+          "description": "Platforms where this promotion should be displayed",
           "items": {
             "type": "string"
           }
         },
         "languages": {
           "type": "array",
-          "description": "Languages where this campaign should be displayed (ISO language codes)",
+          "description": "Languages where this promotion should be displayed (ISO language codes)",
           "items": {
             "type": "string"
           }
@@ -38,12 +38,12 @@
         "startDate": {
           "type": "string",
           "format": "date-time",
-          "description": "Start date for campaign availability (ISO 8601 format)"
+          "description": "Start date for promotion availability (ISO 8601 format)"
         },
         "endDate": {
           "type": "string",
           "format": "date-time",
-          "description": "End date for campaign availability (ISO 8601 format)"
+          "description": "End date for promotion availability (ISO 8601 format)"
         }
       }
     },

@@ -1,11 +1,10 @@
 import Foundation
 
-/// Implementation of CampaignStorageProtocol for tracking display balancing in memory
-/// These counts are reset when promotion configuration changes
-public final class BalancingCampaignStorage: CampaignStorageProtocol {
-  private let promotionsKey = "com.promotable.sdk.balancingPromotionCounts"
+/// Persistent storage for cumulative promotion display statistics
+public final class PromotionStorageCumulative: PromotionStorageProtocol {
+  public var promotionCount: [String : Int] = [:]
   
-  public var promotionCount: [String: Int] = [:]
+  private let promotionsKey = "com.promotable.sdk.cumulativepromotionCount"
   
   public init() {
     load()
@@ -34,7 +33,6 @@ public final class BalancingCampaignStorage: CampaignStorageProtocol {
   }
   
   public func reset() {
-    promotionCount = [:]
-    UserDefaults.standard.removeObject(forKey: promotionsKey)
+    // No need to reset for the moment
   }
 }

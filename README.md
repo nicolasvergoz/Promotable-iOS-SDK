@@ -13,7 +13,7 @@ Promotable is a Swift Package that provides a lightweight and extensible system 
 
 ### Key Features
 
-- Remote configuration of campaigns and promotions through a structured JSON format
+- Remote configuration of promotions through a structured JSON format
 - Targeting support by platform and language
 - Weighted display logic for balanced promotion visibility
 - Impression tracking and display rules
@@ -150,13 +150,13 @@ Promotable uses a structured JSON format to configure promotions. Here's a basic
 
 ### JSON Schema Location
 
-The JSON schema used for campaign configuration validation is located in the repository at:
+The JSON schema used for promotion configuration validation is located in the repository at:
 
 ```
 Sources/Promotable/promotions.schema.json
 ```
 
-This file defines the structure and validation rules for campaign configuration JSON payloads used by the SDK.
+This file defines the structure and validation rules for promotion configuration JSON payloads used by the SDK.
 
 You can use this schema to validate your own JSON configuration files before integrating them with the SDK. This helps ensure compatibility and catch errors early. The schema can be used with standard JSON schema validation tools or libraries in your preferred language.
 

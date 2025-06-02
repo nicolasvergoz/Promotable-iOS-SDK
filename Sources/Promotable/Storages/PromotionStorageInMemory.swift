@@ -2,7 +2,7 @@ import Foundation
 
 /// A simple in-memory implementation of promotion storage
 /// Stores promotion display counts in memory dictionary
-final class CampaignStorageInMemory: CampaignStorageProtocol {
+final class PromotionStorageInMemory: PromotionStorageProtocol {
   var promotionCount: [String : Int] = [:]
   
   func incrementDisplayCount(promotionId: String) {
